@@ -1,0 +1,116 @@
+## Copyright (c) "Kinto Soft Ltd"
+## 
+## Subversion ALM is free software: you can redistribute it and/or modify
+## it under the terms of the GNU Affero General Public License as
+## published by the Free Software Foundation, either version 3 of the
+## License, or (at your option) any later version.
+##
+## This program is distributed in the hope that it will be useful,
+## but WITHOUT ANY WARRANTY; without even the implied warranty of
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU Affero General Public License for more details.
+##
+## You should have received a copy of the GNU Affero General Public License
+## along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+#disable_html_escaping()
+<html>
+  <head>
+    <title>$action.getText("subversion.repositories")</title>
+    <meta name="decorator" content="admin" />
+  </head>
+  <body>
+#if ($action.hasPermissions())	
+	#parse("/com/kintosoft/templates/plugins/subversion/configuration/header.vm")
+	<table class="grid maxWidth">
+    <tbody>
+	<tr>
+        <td class="jiraformheader">
+          <h3 class="formtitle">Import repositories result</h3>
+        </td>		
+    </tr>
+	 #if ($action.hasAnyErrors())
+	 <tr>
+		 <td colspan="2" class="formErrors">
+			 <div class="errorArea">
+				 <h4>Errors</h4>
+				 <ul>
+					 #foreach ($error in $action.getErrorMessages())
+						 <li>$error</li>
+					 #end
+					 #foreach ($error in $action.errors)
+						 <li>$error</li>
+					 #end
+				 </ul>
+			 </div>
+		 </td>
+	 </tr>
+	 #end
+
+	 <tr>
+        <td>
+            <table align="center" bgcolor="bbbbbb" border="0" cellpadding="0" cellspacing="0" width=90%>
+                <tr>
+                  <td>
+                      <table border="0" cellpadding="3" cellspacing="1" width="100%" class="grid">
+                        <tr bgcolor="#f0f0f0">
+                          <td class="colHeaderLink">
+                                <b>Name</b>
+                		  </td>
+                         <td class="colHeaderLink">
+                                <b>Root Url</b>
+                		  </td>
+            	   	       <td class="colHeaderLink">
+                                <b>Status</b>
+                		   </td>
+                	   </tr>
+#if($action.results.size()==0)
+	<tr >
+		<td >
+			No any previously configured repository has been found
+        </td>
+    </tr>
+#else
+
+#foreach ($repo in $action.results.keySet())
+            #if ($velocityCount % 2 == 1)
+              #set ($rowbgcolor = "ffffff")
+            #else
+              #set ($rowbgcolor = "fffff0")
+            #end
+                        <tr bgcolor="$rowbgcolor">
+            				<td valign=top nowrap="true">
+                                $repo.displayName
+                            </td>
+                            <td valign=top nowrap="true">
+                                $repo.root
+                            </td>
+							#set($status=$action.results.get($repo))
+                            <td valign=top nowrap="true" #if($status.isError) class="formErrors" #end>
+									#if($status.isError) 
+										$status.message
+									#else
+										<font color="green">$status.message</font>
+									#end
+                            </td>
+                          </tr>
+ #end
+#end
+                      </table>
+                  </td>
+                </tr>
+             </table> 
+			 <p/>
+		</td>
+     </tr>
+    </tbody>
+    </table>
+	
+	<a href="$req.contextPath/secure/ALMViewSubversionRepositories.jspa">Back</a>
+  
+#else
+	#parse("templates/plugins/subversion/configuration/no-privilege.vm")
+#end
+
+</body>
+</html>

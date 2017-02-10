@@ -1,0 +1,79 @@
+## Copyright (c) "Kinto Soft Ltd"
+## 
+## Subversion ALM is free software: you can redistribute it and/or modify
+## it under the terms of the GNU Affero General Public License as
+## published by the Free Software Foundation, either version 3 of the
+## License, or (at your option) any later version.
+##
+## This program is distributed in the hope that it will be useful,
+## but WITHOUT ANY WARRANTY; without even the implied warranty of
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU Affero General Public License for more details.
+##
+## You should have received a copy of the GNU Affero General Public License
+## along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+#disable_html_escaping()
+<html>
+  <head>
+    <title>Subversion Timeouts</title>
+    <meta name="decorator" content="admin" />
+  </head>
+<body>	
+	#parse("/com/kintosoft/templates/plugins/subversion/configuration/header.vm")
+	<form onsubmit="if (this.submitted) return false; this.submitted = true; return true" name="jiraform" method="post" action="ALMUpdateSVNTimeout.jspa"/>
+    	<table width=100% cellpadding=10 cellspacing=0 border=0>
+    		<tr>
+    			<td>
+            		 <table class="jiraform maxWidth">
+            			 <tbody>
+						 <tr>
+							 <td class="jiraformheader" colspan="2">
+								 <h3 class="formtitle">Subversion Timeouts</h3>
+							 </td>
+						 </tr>
+						 <tr>
+							 <td class="jiraformheader" colspan="2">
+								 You have to re-start the plug-in after change any timeout value.
+							</td>
+						 </tr>
+						 #if ($action.hasAnyErrors())
+						 <tr>
+							 <td colspan="2" class="formErrors">
+								 <div class="errorArea">
+									 <h4>Errors</h4>
+									 <ul>
+										 #foreach ($error in $action.getErrorMessages())
+											 <li>$error</li>
+										 #end
+										 #foreach ($error in $action.errors)
+											 <li>$error</li>
+										 #end
+									 </ul>
+								 </div>
+							 </td>
+						 </tr>
+						 #end
+           				 <tr>
+                            	<td>
+                                    #controlHeader($action 'svnTimeoutConnection' 'Connection Timeout' true $displayParameters.noHeader)
+                                    <input type="text" id="svnTimeoutConnection" name="svnTimeoutConnection" value="$action.svnTimeoutConnection"/>
+                                    #controlFooter($action "Milliseconds (integer greater than 1000)" $displayParameter.noHeader)
+									#controlHeader($action 'svnTimeoutRead' 'Read Timeout' true $displayParameters.noHeader)
+                                    <input type="text" id="svnTimeoutRead" name="svnTimeoutRead" value="$action.svnTimeoutRead"/>
+                                    #controlFooter($action "Milliseconds (integer greater than 1000)" $displayParameter.noHeader)
+                                </td>
+ 							</tr>
+							<tr>
+                               <td>
+									<input type="submit" name="save" value="Save" accesskey="S" title="Press Alt+Shift+S to submit form" class="spaced" />
+									<input id="cancelButton"  type="button" accesskey="`" title="Cancel (Alt+Shift + `)" name="ALMViewSubversionRepositories.jspa" value="Cancel" onclick="location.href='ALMViewSubversionRepositories.jspa'" />
+                                </td>
+                             </tr>
+                         </tbody>
+                     </table>
+                </td>
+            </tr>
+        </table>
+	</form>
+</body>

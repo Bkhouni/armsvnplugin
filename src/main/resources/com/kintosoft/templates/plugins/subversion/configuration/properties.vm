@@ -1,0 +1,158 @@
+## Copyright (c) "Kinto Soft Ltd"
+## 
+## Subversion ALM is free software: you can redistribute it and/or modify
+## it under the terms of the GNU Affero General Public License as
+## published by the Free Software Foundation, either version 3 of the
+## License, or (at your option) any later version.
+##
+## This program is distributed in the hope that it will be useful,
+## but WITHOUT ANY WARRANTY; without even the implied warranty of
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU Affero General Public License for more details.
+##
+## You should have received a copy of the GNU Affero General Public License
+## along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+<tr>
+  <td colspan=2 bgcolor=f0f0f0><b>$action.getText("subversion.repository.details")</b></td>
+</tr>
+
+#controlHeader($action 'displayName' $action.getText("subversion.repository.display.name") true $displayParameters.noHeader)
+<input type="text" id="displayName" name="displayName" #if ($displayName) value="$textutils.htmlEncode( $displayName )" #end />
+#controlFooter($action "" $displayParameter.noHeader)
+
+#controlHeader($action 'root' $action.getText("subversion.repository.root") true $displayParameters.noHeader)
+<input type="text" id="root" name="root" #if ($root) value="$textutils.htmlEncode( $root )" #end size="60" />
+#controlFooter($action $action.getText("subversion.repository.root.description") $displayParameter.noHeader)
+
+<tr>
+  <td colspan=2 bgcolor=f0f0f0><b>$action.getText("subversion.repository.section.basic.auth")</b></td>
+</tr>
+
+#controlHeader($action 'username' $action.getText("subversion.repository.username") false $displayParameters.noHeader)
+<input type="text" id="username" name="username" #if ($username) value="$textutils.htmlEncode( $username )" #end />
+#controlFooter($action '' $displayParameters.noHeader)
+
+#controlHeader($action 'password' $action.getText("subversion.repository.password") false $displayParameters.noHeader)
+<input type="password" id="password" name="password" #if ($password)value="$password" #end/>
+#controlFooter($action '' $displayParameters.noHeader)
+
+#controlHeader($action 'forcedHttpAuth' $action.getText("subversion.repository.forced.http.auth") false $displayParameters.noHeader)
+<input type="checkbox" id="forcedHttpAuth" name="forcedHttpAuth" value="true" #if ($forcedHttpAuth) checked #end/>
+#controlFooter($action $action.getText("subversion.repository.forced.http.auth.description") $displayParameters.noHeader)
+
+###controlHeader($action 'basicAuth' $action.getText("subversion.repository.basic.auth") false $displayParameters.noHeader)
+##<input type="checkbox" id="basicAuth" name="basicAuth" value="true" #if ($basicAuth) checked #end/>
+###controlFooter($action $action.getText("subversion.repository.basic.auth.description") $displayParameters.noHeader)
+
+###controlHeader($action 'basicRealm' $action.getText("subversion.repository.basic.realm") true $displayParameters.noHeader)
+##<input type="text" id="basicRealm" name="basicRealm" #if ($basicRealm) value="$textutils.htmlEncode( $basicRealm )" #end size="60" />
+###controlFooter($action $action.getText("subversion.repository.basic.realm.description") $displayParameters.noHeader)
+
+<tr>
+  <td colspan=2 bgcolor=f0f0f0><b>$action.getText("subversion.repository.section.ssl.auth")</b></td>
+</tr>
+
+#controlHeader($action 'protocolKeyFile' $action.getText("subversion.repository.protocol.key.file") false $displayParameters.noHeader)
+<input type="text" id="protocolKeyFile" name="protocolKeyFile" #if ($protocolKeyFile) value="$textutils.htmlEncode( $protocolKeyFile )" #end size="60" />
+#controlFooter($action $action.getText("subversion.repository.protocol.key.file.description") $displayParameters.noHeader)
+
+#controlHeader($action 'protocolPassPhrase' $action.getText("subversion.repository.protocol.pass.phrase") false $displayParameters.noHeader)
+<input type="password" id="protocolPassPhrase" name="protocolPassPhrase" #if ($protocolPassPhrase) value="$textutils.htmlEncode( $protocolPassPhrase )" #end size="60" />
+#controlFooter($action $action.getText("subversion.repository.protocol.pass.phrase.description") $displayParameters.noHeader)
+
+#controlHeader($action 'protocolPortNumber' $action.getText("subversion.repository.protocol.port.number") false $displayParameters.noHeader)
+<input type="text" id="protocolPortNumber" name="protocolPortNumber" #if ($protocolPortNumber) value="$protocolPortNumber" #end size="1" />
+#controlFooter($action $action.getText("subversion.repository.protocol.port.number.description") $displayParameters.noHeader)
+
+<tr>
+  <td colspan=2 bgcolor=f0f0f0><b>$action.getText("subversion.repository.section.proxy")</b></td>
+</tr>
+
+#controlHeader($action 'proxySupported' $action.getText("subversion.repository.proxy") false $displayParameters.noHeader)
+<input type="checkbox" id="proxySupported" name="proxySupported" value="true" #if ($proxySupported) checked #end/>
+#controlFooter($action $action.getText("subversion.repository.proxy.description") $displayParameters.noHeader)
+
+#controlHeader($action 'proxyHost' $action.getText("subversion.repository.proxy.host") false $displayParameters.noHeader)
+<input type="text" id="proxyHost" name="proxyHost" #if ($proxyHost) value="$textutils.htmlEncode( $proxyHost )" #end size="60" />
+#controlFooter($action $action.getText("subversion.repository.proxy.host.description") $displayParameters.noHeader)
+
+#controlHeader($action 'proxyUserName' $action.getText("subversion.repository.proxy.username") false $displayParameters.noHeader)
+<input type="text" id="proxyUserName" name="proxyUserName" #if ($proxyUserName) value="$textutils.htmlEncode( $proxyUserName )" #end />
+#controlFooter($action $action.getText("subversion.repository.proxy.username.description") $displayParameters.noHeader)
+
+#controlHeader($action 'proxyPassword' $action.getText("subversion.repository.proxy.password") false $displayParameters.noHeader)
+<input type="password" id="proxyPassword" name="proxyPassword" #if ($proxyPassword) value="$textutils.htmlEncode( $proxyPassword )" #end />
+#controlFooter($action $action.getText("subversion.repository.proxy.password.description") $displayParameters.noHeader)
+
+#controlHeader($action 'proxyPort' $action.getText("subversion.repository.proxy.port") false $displayParameters.noHeader)
+<input type="text" id="proxyPort" name="proxyPort" #if ($proxyPort) value="$proxyPort" #end size="1" />
+#controlFooter($action $action.getText("subversion.repository.proxy.port.description") $displayParameters.noHeader)
+
+<tr>
+  <td colspan=2 bgcolor=f0f0f0><b>$action.getText("subversion.repository.section.path.autodetection")</b></td>
+</tr>
+
+#controlHeader($action 'pathAutodetect' $action.getText("subversion.repository.path.autodetect") false $displayParameters.noHeader)
+<input type="checkbox" id="pathAutodetect" name="pathAutodetect" value="true" #if ($pathAutodetect) checked #end />
+#controlFooter($action $action.getText("subversion.repository.path.autodetect.description") $displayParameters.noHeader)
+
+#controlHeader($action 'trunkName' $action.getText("subversion.repository.trunk.name") true $displayParameters.noHeader)
+<input type="text" id="trunkName" name="trunkName" #if ($trunkName) value="$textutils.htmlEncode( $trunkName )" #end />
+#controlFooter($action $action.getText("subversion.repository.trunk.name.description") $displayParameters.noHeader)
+
+#controlHeader($action 'branchesName' $action.getText("subversion.repository.branches.name") true $displayParameters.noHeader)
+<input type="text" id="branchesName" name="branchesName" #if ($branchesName) value="$textutils.htmlEncode( $branchesName )" #end />
+#controlFooter($action $action.getText("subversion.repository.branches.name.description") $displayParameters.noHeader)
+
+#controlHeader($action 'tagsName' $action.getText("subversion.repository.tags.name") true $displayParameters.noHeader)
+<input type="text" id="tagsName" name="tagsName" #if ($tagsName) value="$textutils.htmlEncode( $tagsName )" #end />
+#controlFooter($action $action.getText("subversion.repository.tags.name.description") $displayParameters.noHeader)
+
+<tr>
+  <td colspan=2 bgcolor=f0f0f0><b>$action.getText("subversion.repository.section.performance")</b></td>
+</tr>
+
+#controlHeader($action 'svnConnectionsCount' $action.getText("subversion.repository.connection.count") true $displayParameters.noHeader)
+<input type="text" id="svnConnectionsCount" name="svnConnectionsCount" #if ($svnConnectionsCount) value="$svnConnectionsCount" #end size="1" />
+#controlFooter($action $action.getText("subversion.repository.connection.count.description") $displayParameters.noHeader)
+
+#controlHeader($action 'cachePageSize' $action.getText("subversion.repository.cache.page.size") true $displayParameters.noHeader)
+<input type="text" id="cachePageSize" name="cachePageSize" #if ($cachePageSize) value="$cachePageSize" #end size="1" />
+#controlFooter($action $action.getText("subversion.repository.cache.page.size.description") $displayParameters.noHeader)
+
+#controlHeader($action 'cachePrefetchMessagesCount' $action.getText("subversion.repository.cache.prefetch.message.count") true $displayParameters.noHeader)
+<input type="text" id="cachePrefetchMessagesCount" name="cachePrefetchMessagesCount" #if ($cachePrefetchMessagesCount) value="$cachePrefetchMessagesCount" #end size="1" />
+#controlFooter($action $action.getText("subversion.repository.cache.prefetch.message.count.description") $displayParameters.noHeader)
+
+#controlHeader($action 'versionsCount' $action.getText("subversion.repository.versions.count") true $displayParameters.noHeader)
+<input type="text" id="versionsCount" name="versionsCount" #if ($versionsCount) value="$versionsCount" #end size="1" />
+#controlFooter($action $action.getText("subversion.repository.versions.count.description") $displayParameters.noHeader)
+
+<tr>
+  <td colspan=2 bgcolor=f0f0f0><b>$action.getText("subversion.repository.section.data.management")</b></td>
+</tr>
+
+#controlHeader($action 'defaultEncoding' $action.getText("subversion.repository.default.encoding") true $displayParameters.noHeader)
+<input type="text" id="defaultEncoding" name="defaultEncoding" #if ($tagsName) value="$textutils.htmlEncode( $defaultEncoding )" #end />
+#controlFooter($action $action.getText("subversion.repository.default.encoding.description") $displayParameters.noHeader)
+
+#controlHeader($action 'characterEncodings' $action.getText("subversion.repository.character.encodings") true $displayParameters.noHeader)
+<textarea id="characterEncodings" name="characterEncodings" rows="4" cols="10">#if ($characterEncodings) $textutils.htmlEncode( $characterEncodings ) #end </textarea>
+#controlFooter($action $action.getText("subversion.repository.character.encodings.description") $displayParameters.noHeader)
+
+#controlHeader($action 'binaryMimeTypes' $action.getText("subversion.repository.mime.types.bin") true $displayParameters.noHeader)
+<textarea id="binaryMimeTypes" name="binaryMimeTypes" rows="4" cols="10">#if ($binaryMimeTypes) $textutils.htmlEncode( $binaryMimeTypes ) #end </textarea>
+#controlFooter($action $action.getText("subversion.repository.mime.types.bin.description") $displayParameters.noHeader)
+
+#controlHeader($action 'textMimeTypes' $action.getText("subversion.repository.mime.types.text") true $displayParameters.noHeader)
+<textarea id="textMimeTypes" name="textMimeTypes" rows="4" cols="10">#if ($textMimeTypes) $textutils.htmlEncode( $textMimeTypes ) #end </textarea>
+#controlFooter($action $action.getText("subversion.repository.mime.types.text.description") $displayParameters.noHeader)
+
+##<tr>
+##  <td colspan=2 bgcolor=f0f0f0><b>$action.getText("subversion.repository.section.misc")</b></td>
+##</tr>
+
+###controlHeader($action 'showStackTrace' $action.getText("subversion.repository.show.stacktrace") false $displayParameters.noHeader)
+##<input type="checkbox" id="showStackTrace" name="showStackTrace" value="true" #if ($showStackTrace) checked #end/>
+###controlFooter($action $action.getText("subversion.repository.show.stacktrace.description") $displayParameters.noHeader)

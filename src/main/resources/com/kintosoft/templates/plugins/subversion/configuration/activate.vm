@@ -1,0 +1,72 @@
+## Copyright (c) "Kinto Soft Ltd"
+## 
+## Subversion ALM is free software: you can redistribute it and/or modify
+## it under the terms of the GNU Affero General Public License as
+## published by the Free Software Foundation, either version 3 of the
+## License, or (at your option) any later version.
+##
+## This program is distributed in the hope that it will be useful,
+## but WITHOUT ANY WARRANTY; without even the implied warranty of
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU Affero General Public License for more details.
+##
+## You should have received a copy of the GNU Affero General Public License
+## along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+#disable_html_escaping()
+<html>
+  <head>
+    <title>$action.getText("subversion.repository.activate")</title>
+    <meta name="decorator" content="admin" />
+  </head>
+  <body>
+	#parse("/com/kintosoft/templates/plugins/subversion/configuration/header.vm")
+			<form onsubmit="if (this.submitted) return false; this.submitted = true; return true" name="jiraform" action="ALMViewSubversionRepositories.jspa"/>
+				<table width=100% cellpadding=10 cellspacing=0 border=0>
+					<tr>
+						<td>
+							 <table class="jiraform maxWidth">
+								 <tbody>
+									 <tr>
+										 <td class="jiraformheader">
+											 <h3 class="formtitle">$action.getText("subversion.repository.activate")</h3>
+										 </td>
+									 </tr>
+									 <tr>
+											<td class="jiraformheader">
+												$action.getText("subversion.repository.activate.description")
+											</td>
+									 </tr>
+									 #if ($action.hasAnyErrors())
+										 #foreach ($error in $action.getErrorMessages())
+											 <tr>
+												 <td bgcolor=ffcccc><pre>$error</pre></td>
+											 </tr>
+										 #end
+										 #foreach ($error in $action.errors)
+											 <tr>
+												 <td bgcolor=ffcccc><pre>$error</pre></td>
+											 </tr>
+										 #end
+									 #else
+										 <tr>
+											 <td bgcolor=ffffff>$action.getText("subversion.repository.activation.successful")</td>
+										 </tr>
+									 #end
+									 </tr>
+									 <tr>
+										 <td bgcolor=ffffff>&nbsp;</td>
+									 </tr>
+								 <tr>
+										 <td class="fullyCentered jiraformfooter" >
+								 <input type="submit" name="ok" value="$action.getText("admin.common.words.ok")" accesskey="S" title="Press Alt+Shift+S to submit form" class="spaced" />
+										 </td>
+									 </tr>
+								 </tbody>
+							 </table>
+						 </td>
+					 </tr>
+				 </table>
+			</form>
+  </body>
+</html>

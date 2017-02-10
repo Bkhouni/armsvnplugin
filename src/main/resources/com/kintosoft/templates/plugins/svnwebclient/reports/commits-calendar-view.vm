@@ -1,0 +1,100 @@
+## Copyright (c) "Kinto Soft Ltd"
+## 
+## Subversion ALM is free software: you can redistribute it and/or modify
+## it under the terms of the GNU Affero General Public License as
+## published by the Free Software Foundation, either version 3 of the
+## License, or (at your option) any later version.
+##
+## This program is distributed in the hope that it will be useful,
+## but WITHOUT ANY WARRANTY; without even the implied warranty of
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU Affero General Public License for more details.
+##
+## You should have received a copy of the GNU Affero General Public License
+## along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+
+#if($filterId)
+	#parse("/com/kintosoft/templates/plugins/subversion/configuration/header.vm")
+	#parse("/com/kintosoft/templates/plugins/svnwebclient/common/loading.vm")
+	 <table cellspacing="0" cellpadding="0" width="100%" height="99%">
+           <tr>
+                <td width="100%" valign="bottom" style="padding:0px;spacing:0px; padding-left:5px; padding-right:7px;" align="center">
+ 		     			<h2>$filterName</h2>
+                </td>
+            </tr>
+			<tr >
+				<td height="25px">
+					&nbsp;
+                </td>
+            </tr>
+             <tr>
+                <td width="100%" valign="bottom" style="padding:0px;spacing:0px; padding-left:5px; padding-right:7px;" align="center">
+ 		     			<h3>Commits Calendar</h3>
+                </td>
+            </tr>
+            <tr>
+                <td width="100%" valign="bottom" style="padding:0px;spacing:0px; padding-left:5px; padding-right:7px;" align="center">
+ 		     			<p>All the Subversion commits related to the issues returned by the filter.</p>
+                </td>
+            </tr>
+            <tr>
+                <td width="100%" style="padding:0px;spacing:0px; padding-left:5px; padding-right:7px;" align="center" valign="top">
+ 		     			#loading("loadingCalendar")
+ 		     			<div id="calendar" align="center"></div>
+                </td>
+            </tr>
+            <tr>
+            	<td align="center" width="100%">
+            		<div id="threshold"  align="center"/>
+            	</td>
+            </tr>
+            <tr>
+            	<td height="25px">
+            	</td>
+            </tr>      
+            <tr>
+                <td width="100%" style="padding:0px;spacing:0px; padding-left:5px; padding-right:7px;" align="center" valign="top">
+  		     		<div id="bars"  align="center"></div>
+                </td>
+            </tr>             
+            <tr>
+            	<td align="center" width="100%">
+            		<div id="groupby"  align="center"/>
+            	</td>
+            </tr>          
+             <tr>
+            	<td height="25px">
+            	</td>
+            </tr>      
+             <tr>
+                <td width="100%" valign="bottom" style="padding:0px;spacing:0px; padding-left:5px; padding-right:7px;" align="center">
+ 		     			<h3>User commits</h3>
+                </td>
+            </tr>
+            <tr>
+                <td width="100%" valign="bottom" style="padding:0px;spacing:0px; padding-left:5px; padding-right:7px;" align="center">
+ 		     			<p>The user contribution to the commits displayed above.</p>
+                </td>
+            </tr>
+            <tr>
+                <td width="100%" style="padding:0px;spacing:0px; padding-left:5px; padding-right:7px;" align="center" valign="top">
+		     			#loading("loadingUsers")
+  		     			<div id="users"  align="center"></div>
+                </td>
+            </tr>             
+            <tr>
+            	<td height="100%">
+            	</td>
+            </tr>
+        </table>
+        <script>
+ 	    	showStatsFilter($filterId, function(){
+	    		d3.select("#loadingCalendar").remove();
+	    		d3.select("#loadingUsers").remove();
+	    		if(parent)
+	    			parent.postMessage("resize","*");
+	    	});
+     	</script>
+#end
+ 

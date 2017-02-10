@@ -1,0 +1,61 @@
+Subversion ALM
+==============
+
+========= DISCLAIMER ==========
+
+This source code is a re-write of the original Kinto Soft Subversion ALM plugin, performed by Valiantys. The implementation could not
+be continued because of a missing library (not public anymore).
+
+    Main changes introduced : Active Objects replacing H2 Database.
+    Author : Balkis Khouni (balkis.khouni@valiantys.com)
+
+This pugin is published under the AGPL License.
+
+
+================================
+
+
+1. History
+==========
+Subversion ALM is an add-on for JIRA to integrate Subversion repositories from anywhere.
+
+Originally it was named "Subversion PLUS" as it was a pure improvement of Subversion mainly by:
+
+* replacing the Lucene index by a H2 relational database
+* bundling a customized version of the Polarion's Web Client for Subversion
+
+Later, a lot of features improving traceability with JIRA were added and the name
+changed to "Subversion ALM". The major new features were:
+
+* commit graphs
+* commit calendars
+* JQL functions
+
+2. License
+==========
+Subversion ALM is licensed under the Affero GPL v3 license (AGPL) which mainly means: No warranty!. You can rebrand it
+providing the attribution ('Powered by Kinto Soft' the Kinto Soft's logo and link to the official site at http://www.kintosoft.com)
+as well as a link to any source code modifications made. Even if you host it on a server.
+
+Please, read the full AGPL license from http://www.gnu.org/licenses
+
+If you need a commercial license to keep your source code fully proprietary (closed source), contact please at Kinto Soft Ltd.
+
+
+3. Build
+========
+
+You need the Atlassian Plugin SDK framework in order to build the add-on for JIRA.
+
+Before run the "atlas-compile" command you have to install some 3rd party maven dependencies and pojos not available from the SDK:
+
+* DWR 3.0.RC2
+* web2atlas 
+
+
+
+Enjoy!
+
+Kinto Soft Ltd.
+
+mail: contact@kintosoft.com

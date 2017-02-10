@@ -1,0 +1,40 @@
+## Copyright (c) "Kinto Soft Ltd"
+## 
+## Subversion ALM is free software: you can redistribute it and/or modify
+## it under the terms of the GNU Affero General Public License as
+## published by the Free Software Foundation, either version 3 of the
+## License, or (at your option) any later version.
+##
+## This program is distributed in the hope that it will be useful,
+## but WITHOUT ANY WARRANTY; without even the implied warranty of
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU Affero General Public License for more details.
+##
+## You should have received a copy of the GNU Affero General Public License
+## along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+#set($title="Subversion ALM")
+<header class="aui-page-header">
+    <div class="aui-page-header-inner">
+		<table class="actionbar_head" width="100%" cellpadding="0" cellspacing="0">
+			<tr>
+                <td style="padding-left:8px;padding-right:7px;" valign="middle">
+                    <img src="$req.contextPath/download/resources/com.kintosoft.jira.subversion-plus:svnwebclient/svnwebclient/images/subversion-jira-integration_32.png" alt="Subversion JIRA" title="$title" style="padding:0 0 0 0; margin:0 0 0 0;vertical-align:middle;" border="0"/>
+                </td>
+                <td nowrap="nowrap" class="title" style="padding-top:4px"  valign="middle">
+                    <h2>$title</h2>
+                </td>
+                <td width="80%"  valign="middle">
+                </td>
+                <td width="100%"  valign="middle">
+                </td>
+				<td nowrap="nowrap"  valign="middle">
+					<a href="$req.contextPath/download/resources/com.kintosoft.jira.subversion-plus:svnwebclient/svnwebclient/doc/subversion_plus.pdf" target="_blank"><img src="$req.contextPath/download/resources/com.kintosoft.jira.subversion-plus:svnwebclient/svnwebclient/images/pdf.gif" style="padding:0 0 0 0; margin:0 0 0 0; vertical-align:top;" border="0">&nbsp;Documentation</a>
+                </td>
+              <td style="padding-left:8px;padding-right:7px;"  valign="middle">
+                    <img src="$req.contextPath/download/resources/com.kintosoft.jira.subversion-plus:svnwebclient/svnwebclient/images/kinto_logo_72_48.png" alt="by Kinto Soft Ltd" title="by Kinto Soft Ltd" style="padding:0 0 0 0; margin:0 0 0 0;vertical-align:middle;" border="0"/>
+                </td>
+            </tr>
+        </table>
+    </div>
+</header>

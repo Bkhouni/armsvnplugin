@@ -1,0 +1,51 @@
+body {
+   shape-rendering: crispEdges;
+}
+
+.swc_day {
+  fill: #fff;
+  stroke: #ccc;
+}
+
+.swc_month {
+  fill: none;
+  stroke: #000;
+  stroke-width: 2px;
+}
+
+.swc_calendar .q0-10{fill: rgb(238,245,251)}
+.swc_calendar .q1-10{fill: rgb(230,237,243)}
+.swc_calendar .q2-10{fill: rgb(214,227,238)}
+.swc_calendar .q3-10{fill: rgb(193,213,230)}
+.swc_calendar .q4-10{fill: rgb(173,199,222)}
+.swc_calendar .q5-10{fill: rgb(152,186,213)}
+.swc_calendar .q6-10{fill: rgb(132,172,205)}
+.swc_calendar .q7-10{fill: rgb(111,158,197)}
+.swc_calendar .q8-10{fill: rgb(91,144,188)}
+.swc_calendar .q9-10{fill: rgb(70,130,180)}
+
+        
+ #users {
+       font: 10px sans-serif;
+   }
+   .axis path,
+   .axis line {
+       fill: none;
+       stroke: #000;
+       shape-rendering: crispEdges;
+   }
+   .bar {
+       fill: steelblue;
+   }
+   .bar:hover {
+       fill: rgb(62, 104, 146);
+   }
+   .brush .extent {
+       stroke: #ccc;
+       fill-opacity: .125;
+       shape-rendering: crispEdges;
+   }
+   
+ svg {
+         display: block;
+      }

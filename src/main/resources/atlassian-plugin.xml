@@ -1,0 +1,848 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<atlassian-plugin key="${atlassian.plugin.key}" name="${project.name}"
+	plugins-version="2">
+	<plugin-info>
+		<description>${project.description}</description>
+		<vendor name="${project.organization.name}" url="${project.organization.url}" />
+		<version>${project.version}</version>
+		<application-version min="${atlassian.plugin.application.version.min}" />
+		<param name="atlassian-licensing-enabled">false</param>
+		<param name="plugin-icon">svnwebclient/images/subversion-jira-integration_16.png</param>
+		<param name="plugin-logo">svnwebclient/images/subversion-jira-integration_72.png</param>
+		<param name="vendor-icon">svnwebclient/images/kintosoft_16.png</param>
+		<param name="vendor-logo">svnwebclient/images/kintosoft_72.png</param>
+		<param name="configure.url">/secure/ALMViewSubversionRepositories.jspa</param>
+	</plugin-info>
+
+	<ao key="ao-module">
+		<description>The module configuring the Active Objects service used by this plugin</description>
+		<entity>com.kintosoft.svnwebclient.graph.entities.ao.Action</entity>
+		<entity>com.kintosoft.svnwebclient.graph.entities.ao.AppConfig</entity>
+		<entity>com.kintosoft.svnwebclient.graph.entities.ao.Comment</entity>
+		<entity>com.kintosoft.svnwebclient.graph.entities.ao.Copy</entity>
+		<entity>com.kintosoft.svnwebclient.graph.entities.ao.Item</entity>
+		<entity>com.kintosoft.svnwebclient.graph.entities.ao.Key</entity>
+		<entity>com.kintosoft.svnwebclient.graph.entities.ao.Repository</entity>
+		<entity>com.kintosoft.svnwebclient.graph.entities.ao.RepoConfig</entity>
+		<entity>com.kintosoft.svnwebclient.graph.entities.ao.Revision</entity>
+	</ao>
+
+	<!-- 
+	<bundle-instructions key="svnweblient-bundle-instructions">
+		<Import-Package>
+			org.w3c.dom*;
+		</Import-Package>
+	</bundle-instructions>
+	-->
+	<resource
+		location="com.kintosoft.jira.plugin.ext.subversion.action.SubversionActionSupport"
+		name="ALMSubversionActionSupport" type="i18n" />
+	<!-- this property file contains i18n keys for the panel -->
+	<resource
+		location="com.kintosoft.templates.plugins.subversion.projecttabpanels.subversion_jira_plugin"
+		name="alm-projecttabpanels-subversion_jira_plugin" type="i18n" />
+	<resource
+		location="com.kintosoft.templates.plugins.subversion.issuetabpanels.subversion_jira_plugin"
+		name="alm-issuetabpanels-subversion_jira_plugin" type="i18n" />
+	
+	<issue-tabpanel
+		class="com.kintosoft.jira.plugin.ext.subversion.issuetabpanels.changes.SubversionRevisionsTabPanel"
+		key="svnplus-subversion-commits-tabpanel" name="Subversion ALM Commits Tab Panel">
+		<description>It shows Subversion commits related to an issue in an
+			issue tab panel.
+		</description>
+		<label key="subversion.issue-tab.label" />
+		<resource
+			location="/com/kintosoft/templates/plugins/subversion/issuetabpanels/subversion-commits-view.vm"
+			name="view" type="velocity" />
+		<supports-ajax-load>true</supports-ajax-load>
+	</issue-tabpanel>
+	<project-tabpanel
+		class="com.kintosoft.jira.plugin.ext.subversion.projecttabpanels.SubversionProjectTabPanel"
+		key="svnplus-subversion-project-tab" name="Subversion ALM Commits Project Tab">
+		<description key="subversion.project-tab.description" />
+		<label key="subversion.project-tab.label" />
+		<!-- this is a number defining the order of all project tabs. The system 
+			panels are 10, 20, 30 and 40. -->
+		<order>50</order>
+		<!-- this template produces the HTML for the panel -->
+		<resource
+			location="/com/kintosoft/templates/plugins/subversion/projecttabpanels/subversion-project-tab.vm"
+			name="view" type="velocity" />
+	</project-tabpanel>
+
+	<web-panel key="svnplus-greenhopper-web-panel" location="jira.agile.board.tools" weight="999999">
+	  <resource name="view" type="velocity" location="/com/kintosoft/templates/plugins/subversion/agiletabpanels/subversion-agile-commits-view.vm"/>
+	  <context-provider class="com.kintosoft.jira.plugin.ext.subversion.agiletabpanels.SubversionAgileTabPanelContext"/>
+	  <label key="Subversion ALM"/>
+	  <tooltip key="10 latest commits"/>
+	  <resource type="download" name="icon.png" location="/svnwebclient/images/subversion-jira-integration_16.png"/>
+	  <description>Shows Subversion commits on the Agile boards</description>
+	</web-panel>
+
+  	<web-section key="svnplus-svn_topmenu_section" name="Subversion ALM Top Menu Section"
+		location="svnplus-svn_topmenu_link" weight="10" />
+	<web-item key="svnplus-svn_topmenu_link" name="Show Subversion on the JIRA top menu"
+		section="system.top.navigation.bar" weight="47">
+		<label>Subversion ALM</label>
+		<link linkId="svnplus-svn_topmenu_link">/secure/SWCTopMenuAction!default.jspa</link>
+		<!--<condition
+			class="com.kintosoft.jira.permissions.ViewVersionControlPermission">
+		</condition>-->
+	</web-item>
+	<web-item key="svnplus-svn_web_client_link" name="SVN ALM Web Client"
+		section="svnplus-svn_topmenu_link/svnplus-svn_topmenu_section" weight="10">
+		<label>Browse</label>
+		<link linkId="website_link">/secure/SWCTopMenuAction!default.jspa</link>
+	</web-item>
+	<web-item key="svnplus-svn_filter_calendar_view_link" name="SVN ALM Filter Report"
+		section="svnplus-svn_topmenu_link/svnplus-svn_topmenu_section" weight="20">
+		<label>Commits Calendar...</label>
+		<link linkId="website_link">/secure/ConfigureReport!default.jspa?reportKey=com.kintosoft.jira.subversion-plus:svn-plus-filter-reports</link>
+	</web-item>
+	<web-item key="svnplus-subversion-repositories-link"
+		name="Subversion ALM repositories link on administrators page" section="admin_plugins_menu/source_control"
+		weight="96">
+		<label key="subversion.repositories" />
+		<!--<condition
+			class="com.atlassian.jira.plugin.webfragment.conditions.JiraGlobalPermissionCondition">
+			<param name="permission">admin</param>
+		</condition>-->
+		<link linkId="svnplus-repositories">/secure/ALMViewSubversionRepositories.jspa</link>
+	</web-item>
+	<webwork1 class="java.lang.Object" key="svnplus-SubversionRepositoriesManagement"
+		name="Subversion ALM repositories management" roles-required="admin">
+		<actions>
+			<action alias="ALMViewSubversionRepositories"
+				name="com.kintosoft.jira.plugin.ext.subversion.action.ViewSubversionRepositoriesAction">
+				<view name="success">/com/kintosoft/templates/plugins/subversion/configuration/list.vm
+				</view>
+			</action>
+			<action alias="ALMAddSubversionRepository"
+				name="com.kintosoft.jira.plugin.ext.subversion.action.AddSubversionRepositoryAction">
+				<view name="input">/com/kintosoft/templates/plugins/subversion/configuration/add.vm
+				</view>
+				<view name="error">/com/kintosoft/templates/plugins/subversion/configuration/add.vm
+				</view>
+				<view name="permissionviolation">/com/kintosoft/templates/plugins/subversion/configuration/no-privilege.vm
+				</view>
+			</action>
+			<action alias="ALMUpdateSubversionRepository"
+				name="com.kintosoft.jira.plugin.ext.subversion.action.UpdateSubversionRepositoryAction">
+				<view name="input">/com/kintosoft/templates/plugins/subversion/configuration/edit.vm
+				</view>
+				<view name="permissionviolation">/com/kintosoft/templates/plugins/subversion/configuration/no-privilege.vm
+				</view>
+				<view name="error">/com/kintosoft/templates/plugins/subversion/configuration/edit.vm
+				</view>
+			</action>
+			<action alias="ALMDeleteSubversionRepository"
+				name="com.kintosoft.jira.plugin.ext.subversion.action.DeleteSubversionRepositoryAction">
+				<view name="input">/com/kintosoft/templates/plugins/subversion/configuration/delete.vm
+				</view>
+				<view name="permissionviolation">/com/kintosoft/templates/plugins/subversion/configuration/no-privilege.vm
+				</view>
+				<view name="error">/com/kintosoft/templates/plugins/subversion/configuration/delete.vm
+				</view>
+			</action>
+			<action alias="ALMActivateSubversionRepository"
+				name="com.kintosoft.jira.plugin.ext.subversion.action.ActivateSubversionRepositoryAction">
+				<view name="permissionviolation">/com/kintosoft/templates/plugins/subversion/configuration/no-privilege.vm
+				</view>
+				<view name="success">/com/kintosoft/templates/plugins/subversion/configuration/activate.vm
+				</view>
+			</action>
+			<action alias="ALMUpdateDatabaseServer"
+				name="com.kintosoft.jira.plugin.ext.subversion.action.UpdateDatabaseServerAction">
+				<view name="input">/com/kintosoft/templates/plugins/subversion/configuration/edit-database-server.vm
+				</view>
+				<view name="error">/com/kintosoft/templates/plugins/subversion/configuration/edit-database-server.vm
+				</view>
+				<view name="permissionviolation">/com/kintosoft/templates/plugins/subversion/configuration/no-privilege.vm
+				</view>
+			</action>
+			<action alias="ALMUpdateScheduler"
+				name="com.kintosoft.jira.plugin.ext.subversion.action.UpdateSchedulerAction">
+				<view name="input">/com/kintosoft/templates/plugins/subversion/configuration/edit-scheduler.vm
+				</view>
+				<view name="error">/com/kintosoft/templates/plugins/subversion/configuration/edit-scheduler.vm
+				</view>
+				<view name="permissionviolation">/com/kintosoft/templates/plugins/subversion/configuration/no-privilege.vm
+				</view>
+			</action>
+			<action alias="ALMUpdateConnectionPoolSize"
+				name="com.kintosoft.jira.plugin.ext.subversion.action.UpdateConnectionPoolSizeAction">
+				<view name="input">/com/kintosoft/templates/plugins/subversion/configuration/edit-pool-size.vm
+				</view>
+				<view name="error">/com/kintosoft/templates/plugins/subversion/configuration/edit-pool-size.vm
+				</view>
+				<view name="permissionviolation">/com/kintosoft/templates/plugins/subversion/configuration/no-privilege.vm
+				</view>
+			</action>
+			<action alias="ALMUpdateSVNTimeout"
+				name="com.kintosoft.jira.plugin.ext.subversion.action.UpdateSVNTimeoutAction">
+				<view name="input">/com/kintosoft/templates/plugins/subversion/configuration/edit-svn-timeout.vm
+				</view>
+				<view name="error">/com/kintosoft/templates/plugins/subversion/configuration/edit-svn-timeout.vm
+				</view>
+				<view name="permissionviolation">/com/kintosoft/templates/plugins/subversion/configuration/no-privilege.vm
+				</view>
+			</action>
+			<action alias="ALMUpdateShareConnections"
+				name="com.kintosoft.jira.plugin.ext.subversion.action.UpdateShareConnectionsAction">
+				<view name="error">/com/kintosoft/templates/plugins/subversion/configuration/list.vm
+				</view>
+				<view name="permissionviolation">/com/kintosoft/templates/plugins/subversion/configuration/no-privilege.vm
+				</view>
+			</action>
+			<action alias="ALMUpdateRequireTrackerSession"
+				name="com.kintosoft.jira.plugin.ext.subversion.action.UpdateRequireTrackerSessionsAction">
+				<view name="error">/com/kintosoft/templates/plugins/subversion/configuration/list.vm
+				</view>
+				<view name="permissionviolation">/com/kintosoft/templates/plugins/subversion/configuration/no-privilege.vm
+				</view>
+			</action>			
+			<action alias="ALMUpdateCompactOnClose"
+				name="com.kintosoft.jira.plugin.ext.subversion.action.UpdateCompactOnCloseAction">
+				<view name="error">/com/kintosoft/templates/plugins/subversion/configuration/list.vm
+				</view>
+				<view name="permissionviolation">/com/kintosoft/templates/plugins/subversion/configuration/no-privilege.vm
+				</view>
+			</action>			
+			<action alias="ALMImportRepositories"
+				name="com.kintosoft.jira.plugin.ext.subversion.action.ImportRepositoriesAction">
+				<view name="input">/com/kintosoft/templates/plugins/subversion/configuration/import-repositories.vm
+				</view>
+				<view name="error">/com/kintosoft/templates/plugins/subversion/configuration/import-repositories.vm
+				</view>
+				<view name="permissionviolation">/com/kintosoft/templates/plugins/subversion/configuration/no-privilege.vm
+				</view>
+			</action>
+			<action alias="SWCTopMenuAction" name="com.kintosoft.jira.actions.SWCTopMenuAction"
+				roles-required="user">
+				<view name="success">/com/kintosoft/templates/plugins/svnwebclient/topmenu/iframe.vm
+				</view>
+				<view name="permissionviolation">/com/kintosoft/templates/plugins/subversion/configuration/no-privilege.vm
+				</view>
+				<view name="filter-commits">/com/kintosoft/templates/plugins/svnwebclient/reports/filter-commits.vm
+				</view>
+			</action>
+		</actions>
+	</webwork1>
+	<web-resource key="subversion-alm-resource-js" name="Subversion JavaScript">
+		<cotext>jira.view.issue</cotext>
+   		<context>gh-rapid</context>
+		<dependency>jira.webresources:jira-global</dependency>
+		<resource location="/com/kintosoft/templates/plugins/subversion/css/subversion.css"
+			name="subversion.css" type="download" />
+		<resource location="/com/kintosoft/templates/plugins/subversion/scripts/subversion.js"
+			name="subversion.js" type="download" />
+		<!--  <resource location="svnwebclient/script/analytics.js"
+			name="analytics.js" type="download" /> -->
+	</web-resource>
+	<web-resource key="svnwebclient" name="svnwebclient">
+		<dependency>jira.webresources:jira-global</dependency>
+		<resource location="svnwebclient/" name="svnwebclient/" type="download" />
+	</web-resource>
+	<!-- Reports INI -->
+	<report name="Subversion ALM Filter Report"
+		key="svn-plus-filter-reports" class="com.kintosoft.jira.reports.SVNFilterReport">
+		<description>It shows the commits calendar view for the iussues of a given filter</description>
+		<resource name="view" type="velocity"
+			location="/com/kintosoft/templates/plugins/svnwebclient/reports/commits-calendar-view.vm" />
+		<label>Commit Calendar View</label>
+		<properties>
+			<property>
+				<key>filterId</key>
+				<name>Filter</name>
+				<description></description>
+				<type>filterpicker</type>
+				<values class="com.atlassian.jira.portal.SearchRequestValuesGenerator" />
+			</property>
+		</properties>
+	</report>
+	<!-- Repoprts END -->
+	<servlet-filter name="SVN Web Client Forward Filter"
+		i18n-name-key="svn-web-client-forward-filter.name" key="svn-web-client-forward-filter"
+		class="com.kintosoft.jira.servlet.SVNWebClientForwardFilter" location="before-dispatch"
+		weight="1000000">
+		<description key="svn-web-client-forward-filter.description">The SVN Web Client Forward Filter Plugin
+		</description>
+		<url-pattern>/plugins/servlet/svnwebclient/*</url-pattern>
+		<dispatcher>REQUEST</dispatcher>
+	</servlet-filter>
+	<servlet-filter name="Database Web Console Access Filter"
+		key="svn-web-client-db-console-access-filter"
+		class="com.kintosoft.jira.servlet.DBConsoleAuthorizationFilter" location="before-dispatch"
+		weight="999999">
+		<description>This filter ensures that only JIRA administrators can access to the database web console
+		</description>
+		<url-pattern>/plugins/servlet/svnwebclient/console/*</url-pattern>
+		<dispatcher>REQUEST</dispatcher>
+	</servlet-filter>
+	
+	<!-- Polarion un-used <servlet-filter name="Charset Filter" key="svnwebclient.filter.charset" 
+		class="org.polarion.svnwebclient.web.CharsetFilter"> <description key="svnwebclient.filter.charset.description">The 
+		SVN Web Client Charset Filter Plugin</description> <url-pattern>/plugins/servlet/svnwebclient/*</url-pattern> 
+		<dispatcher>REQUEST</dispatcher> </servlet-filter> <servlet-filter name="Bind 
+		Sessions Filter" key="svnwebclient.filter.bindsession" class="org.polarion.svnwebclient.authorization.impl.BindSessionsFilter"> 
+		<description key="svnwebclient.filter.bindsession.description">The SVN Web 
+		Client Bind Sessions Filter Plugin</description> <url-pattern>/plugins/servlet/svnwebclient/*</url-pattern> 
+		<dispatcher>REQUEST</dispatcher> </servlet-filter> -->
+	<!--<servlet class="org.h2.server.web.WebServlet" key="org.h2.server.web.WebServlet"
+		name="org.h2.server.web.WebServlet">
+		<url-pattern>/svnwebclient/console/*</url-pattern>
+		<init-param>
+			<param-name>webAllowOthers</param-name>
+			<param-value>true</param-value>
+		</init-param>
+		<init-param>
+			<param-name>trace</param-name>
+			<param-value>false</param-value>
+		</init-param>
+	</servlet>-->
+	<servlet name="DWRServlet" key="org.directwebremoting.servlet.DwrServlet"
+		class="org.directwebremoting.servlet.DwrServlet">
+		<description key="svnwebcient.dwr.servlet">DWR Servlet</description>
+		<url-pattern>/svnwebclient/dwr/*</url-pattern>
+		<init-param>
+			<param-name>debug</param-name>
+			<param-value>false</param-value>
+		</init-param>
+		<init-param>
+			<param-name>skipDefaultConfig</param-name>
+			<param-value>true</param-value>
+		</init-param>
+		<init-param>
+			<param-name>classes</param-name>
+			<param-value>com.kintosoft.svnwebclient.graph.db.StatsService,
+				com.kintosoft.svnwebclient.graph.db.CommitGraphService,
+				com.kintosoft.svnwebclient.graph.model.ItemModel,
+				com.kintosoft.svnwebclient.graph.model.RevisionModel,
+				com.kintosoft.svnwebclient.graph.model.ActionModel,
+				com.kintosoft.svnwebclient.graph.model.CopyModel,
+				com.kintosoft.svnwebclient.graph.model.Graph,
+				com.kintosoft.svnwebclient.graph.model.Segment,
+				com.kintosoft.svnwebclient.graph.db.SegmentCommitsRequest,
+				com.kintosoft.svnwebclient.graph.model.jira.Issue
+			</param-value>
+		</init-param>
+		<init-param>
+			<param-name>generateDtoClasses</param-name>
+			<param-value>interface</param-value>
+		</init-param>
+	</servlet>
+	<jql-function name="svnMultiCommit" key="svnHasCommits"
+		class="com.kintosoft.jira.jql.SVNMultiCommit">
+		<description>JQL Function: It returns issues having a minimal amount
+			commits
+		</description>
+	</jql-function>
+	<jql-function name="svnMultiProject" key="svnMultiProject"
+		class="com.kintosoft.jira.jql.SVNMultiProject">
+		<description>JQL Function: It returns issues with cross project
+			commits
+		</description>
+	</jql-function>
+	<jql-function name="svnMultiAuthor" key="svnMultiAuthor"
+		class="com.kintosoft.jira.jql.SVNMultiAuthor">
+		<description>JQL Function: It returns issues with more than one
+			contributor
+		</description>
+	</jql-function>
+	<jql-function name="svnMultiRepository" key="svnMultiRepository"
+		class="com.kintosoft.jira.jql.SVNMultiRepository">
+		<description>JQL Function: It returns issues with commits belonging to
+			more than one repository
+		</description>
+	</jql-function>
+	<jql-function name="svnAuthor" key="svn-commit-author-is"
+		class="com.kintosoft.jira.jql.SVNCommitAuthorIs">
+		<description>JQL Function: It returns the issues related to commits
+			made for an specific author
+		</description>
+	</jql-function>
+	<jql-function name="svnItem" key="svn-item"
+		class="com.kintosoft.jira.jql.SVNItem">
+		<description>JQL Function: It gets files or directories related to an
+			issue
+		</description>
+	</jql-function>
+	<jql-function name="svnComment" key="svn-tex-in-comment"
+		class="com.kintosoft.jira.jql.SVNTexInComment">
+		<description>JQL Function: It returns issues related to commits
+			containing the text in their commit comment messages
+		</description>
+	</jql-function>
+	<jql-function name="svnCommitNumberRange" key="svn-commits-in-range"
+		class="com.kintosoft.jira.jql.SVNCommitsInRange">
+		<description>JQL Function: It returns the issues related to commits
+			between a revision range
+		</description>
+	</jql-function>
+	<jql-function name="svnCommitDateRange" key="svn-commits-in-date-range"
+		class="com.kintosoft.jira.jql.SVNCommitsInDateRange">
+		<description>JQL Function: It returns the issues ralated to commits
+			between a date range
+		</description>
+	</jql-function>
+
+	<component-import key="ao" name="Active Objects service"
+					  interface="com.atlassian.activeobjects.external.ActiveObjects">
+		<description>Component to access Active Objects functionality from the
+			plugin
+		</description>
+	</component-import>
+
+	<!-- ****************** -->
+
+	<component-import key="jpsf" name="JIRA Property Set Factory"
+					  interface="com.atlassian.jira.propertyset.JiraPropertySetFactory">
+		<description>Component to access Active Objects functionality from the
+			plugin
+		</description>
+	</component-import>
+
+
+
+
+	<component-import key="ss" name="Scheduler Service"
+					  interface="com.atlassian.scheduler.SchedulerService">
+		<description>Component to access Scheduler Service functionality from the
+			plugin
+		</description>
+	</component-import>
+
+
+	<component-import key="vrcf" name="Velocity Request Context Factory"
+					  interface="com.atlassian.jira.util.velocity.VelocityRequestContextFactory">
+		<description>Component to access Scheduler Service functionality from the
+			plugin
+		</description>
+	</component-import>
+
+	<component key="tx-processor" name="Transactional Annotation Processor" class="com.atlassian.activeobjects.external.TransactionalAnnotationProcessor">
+		<description>Processes ActiveObjects @Transactional annotations</description>
+	</component>
+
+	<component key="aLMultipleSubversionRepositoryManager" name="ALM Multiple Subversion Repository Manager"
+			   public="true" class="com.kintosoft.jira.plugin.ext.subversion.ALMMultipleSubversionRepositoryManagerImpl">
+		<interface>com.kintosoft.jira.plugin.ext.subversion.ALMMultipleSubversionRepositoryManager</interface>
+	</component>
+
+	<component key="aoManager" name="AO Manager"
+			   public="true" class="com.kintosoft.svnwebclient.utils.AOManagerImpl">
+		<interface>com.kintosoft.svnwebclient.utils.AOManager</interface>
+	</component>
+
+
+
+
+	<!--<component-import key="pluginAccessor"
+		interface="com.atlassian.plugin.PluginAccessor" />
+	<component-import key="pluginController"
+		interface="com.atlassian.plugin.PluginController" />
+	<component-import key="txTemplate"
+		interface="com.atlassian.sal.api.transaction.TransactionTemplate" />
+	<component-import key="applicationProperties"
+		interface="com.atlassian.sal.api.ApplicationProperties" />
+	<component-import key="templateRenderer"
+		interface="com.atlassian.templaterenderer.TemplateRenderer" />
+	<component-import key="pluginSettingsFactory"
+		interface="com.atlassian.sal.api.pluginsettings.PluginSettingsFactory" />
+	<component-import key="loginUriProvider"
+		interface="com.atlassian.sal.api.auth.LoginUriProvider" />
+	<component-import key="userManager"
+		interface="com.atlassian.sal.api.user.UserManager" />
+	<component-import key="i18nResolver"
+		interface="com.atlassian.sal.api.message.I18nResolver" />
+	<component key="thirdPartyPluginLicenseStorageManager"
+		class="com.atlassian.upm.license.storage.lib.ThirdPartyPluginLicenseStorageManagerImpl" />
+	<component key="pluginLicenseStoragePluginInstaller"
+		class="com.atlassian.upm.license.storage.lib.PluginLicenseStoragePluginInstaller" />
+	<component key="atlassianMarketplaceUriFactory"
+		class="com.atlassian.upm.license.storage.lib.AtlassianMarketplaceUriFactoryImpl" />
+	<component key="compatibilityUserManager"
+		class="com.atlassian.sal.usercompatibility.impl.CompatibilityUserManager" />
+	<servlet name="License Servlet" key="svnwebclient-license-servlet"
+		class="com.kintosoft.jira.servlet.LicenseServlet">
+		<description>Subversion Web Client License Servlet</description>
+		<url-pattern>/svnwebclient/license</url-pattern>
+	</servlet>-->
+
+
+	<servlet class="jsp.changeConfirmation_jsp" key="svnwebclient.jsp.changeConfirmation_jsp"
+		name="svnwebclient.jsp.changeConfirmation_jsp">
+		<url-pattern>/svnwebclient/changeConfirmation.jsp</url-pattern>
+	</servlet>
+	<servlet class="jsp.delete_jsp" key="svnwebclient.jsp.delete_jsp"
+		name="svnwebclient.jsp.delete_jsp">
+		<url-pattern>/svnwebclient/delete.jsp</url-pattern>
+	</servlet>
+	<servlet class="jsp.directoryAdd_jsp" key="svnwebclient.jsp.directoryAdd_jsp"
+		name="svnwebclient.jsp.directoryAdd_jsp">
+		<url-pattern>/svnwebclient/directoryAdd.jsp</url-pattern>
+	</servlet>
+	<servlet class="jsp.directoryCompare_jsp" key="svnwebclient.jsp.directoryCompare_jsp"
+		name="svnwebclient.jsp.directoryCompare_jsp">
+		<url-pattern>/svnwebclient/directoryCompare.jsp</url-pattern>
+	</servlet>
+	<servlet class="jsp.directoryContent_jsp" key="svnwebclient.jsp.directoryContent_jsp"
+		name="svnwebclient.jsp.directoryContent_jsp">
+		<url-pattern>/svnwebclient/directoryContent.jsp</url-pattern>
+	</servlet>
+	<servlet class="jsp.error_jsp" key="svnwebclient.jsp.error_jsp"
+		name="svnwebclient.jsp.error_jsp">
+		<url-pattern>/svnwebclient/error.jsp</url-pattern>
+	</servlet>
+	<servlet class="jsp.fileAdd_jsp" key="svnwebclient.jsp.fileAdd_jsp"
+		name="svnwebclient.jsp.fileAdd_jsp">
+		<url-pattern>/svnwebclient/fileAdd.jsp</url-pattern>
+	</servlet>
+	<servlet class="jsp.fileAnnotation_jsp" key="svnwebclient.jsp.fileAnnotation_jsp"
+		name="svnwebclient.jsp.fileAnnotation_jsp">
+		<url-pattern>/svnwebclient/fileAnnotation.jsp</url-pattern>
+	</servlet>
+	<servlet class="jsp.fileCompare_jsp" key="svnwebclient.jsp.fileCompare_jsp"
+		name="svnwebclient.jsp.fileCompare_jsp">
+		<url-pattern>/svnwebclient/fileCompare.jsp</url-pattern>
+	</servlet>
+	<servlet class="jsp.fileCompareData_jsp" key="svnwebclient.jsp.fileCompareData_jsp"
+		name="svnwebclient.jsp.fileCompareData_jsp">
+		<url-pattern>/svnwebclient/fileCompareData.jsp</url-pattern>
+	</servlet>
+	<servlet class="jsp.fileContent_jsp" key="svnwebclient.jsp.fileContent_jsp"
+		name="svnwebclient.jsp.fileContent_jsp">
+		<url-pattern>/svnwebclient/fileContent.jsp</url-pattern>
+	</servlet>
+	<servlet class="jsp.fileData_jsp" key="svnwebclient.jsp.fileData_jsp"
+		name="svnwebclient.jsp.fileData_jsp">
+		<url-pattern>/svnwebclient/fileData.jsp</url-pattern>
+	</servlet>
+	<servlet class="jsp.filePDF_jsp" key="svnwebclient.jsp.filePDF_jsp"
+		name="svnwebclient.jsp.filePDF_jsp">
+		<url-pattern>/svnwebclient/filePDF.jsp</url-pattern>
+	</servlet>
+	<servlet class="jsp.fileUpdate_jsp" key="svnwebclient.jsp.fileUpdate_jsp"
+		name="svnwebclient.jsp.fileUpdate_jsp">
+		<url-pattern>/svnwebclient/fileUpdate.jsp</url-pattern>
+	</servlet>
+	<servlet class="jsp.gotoPath_jsp" key="svnwebclient.jsp.gotoPath_jsp"
+		name="svnwebclient.jsp.gotoPath_jsp">
+		<url-pattern>/svnwebclient/gotoPath.jsp</url-pattern>
+	</servlet>
+	<servlet class="jsp.include.progress_jsp" key="svnwebclient.jsp.include.progress_jsp"
+		name="svnwebclient.jsp.include.progress_jsp">
+		<url-pattern>/svnwebclient/include/progress.jsp</url-pattern>
+	</servlet>
+	<servlet class="jsp.include.actionPanel_jsp" key="svnwebclient.jsp.include.actionPanel_jsp"
+		name="svnwebclient.jsp.include.actionPanel_jsp">
+		<url-pattern>/svnwebclient/include/actionPanel.jsp</url-pattern>
+	</servlet>
+	<servlet class="jsp.include.compareInfoPanel_jsp" key="svnwebclient.jsp.include.compareInfoPanel_jsp"
+		name="svnwebclient.jsp.include.compareInfoPanel_jsp">
+		<url-pattern>/svnwebclient/include/compareInfoPanel.jsp</url-pattern>
+	</servlet>
+	<servlet class="jsp.include.dialog.changeConfirmationContent_jsp"
+		key="svnwebclient.jsp.include.dialog.changeConfirmationContent_jsp"
+		name="svnwebclient.jsp.include.dialog.changeConfirmationContent_jsp">
+		<url-pattern>/svnwebclient/include/dialog/changeConfirmationContent.jsp
+		</url-pattern>
+	</servlet>
+	<servlet class="jsp.include.dialog.deleteContent_jsp"
+		key="svnwebclient.jsp.include.dialog.deleteContent_jsp" name="svnwebclient.jsp.include.dialog.deleteContent_jsp">
+		<url-pattern>/svnwebclient/include/dialog/deleteContent.jsp
+		</url-pattern>
+	</servlet>
+	<servlet class="jsp.include.dialog.directoryAddContent_jsp"
+		key="svnwebclient.jsp.include.dialog.directoryAddContent_jsp" name="svnwebclient.jsp.include.dialog.directoryAddContent_jsp">
+		<url-pattern>/svnwebclient/include/dialog/directoryAddContent.jsp
+		</url-pattern>
+	</servlet>
+	<servlet class="jsp.include.dialog.errorContent_jsp"
+		key="svnwebclient.jsp.include.dialog.errorContent_jsp" name="svnwebclient.jsp.include.dialog.errorContent_jsp">
+		<url-pattern>/svnwebclient/include/dialog/errorContent.jsp
+		</url-pattern>
+	</servlet>
+	<servlet class="jsp.include.dialog.fileAddContent_jsp"
+		key="svnwebclient.jsp.include.dialog.fileAddContent_jsp" name="svnwebclient.jsp.include.dialog.fileAddContent_jsp">
+		<url-pattern>/svnwebclient/include/dialog/fileAddContent.jsp
+		</url-pattern>
+	</servlet>
+	<servlet class="jsp.include.dialog.fileUpdateContent_jsp"
+		key="svnwebclient.jsp.include.dialog.fileUpdateContent_jsp" name="svnwebclient.jsp.include.dialog.fileUpdateContent_jsp">
+		<url-pattern>/svnwebclient/include/dialog/fileUpdateContent.jsp
+		</url-pattern>
+	</servlet>
+	<servlet class="jsp.include.dialog.goToPathContent_jsp"
+		key="svnwebclient.jsp.include.dialog.goToPathContent_jsp" name="svnwebclient.jsp.include.dialog.goToPathContent_jsp">
+		<url-pattern>/svnwebclient/include/dialog/goToPathContent.jsp
+		</url-pattern>
+	</servlet>
+	<servlet class="jsp.include.dialog.invalidResourceButtons_jsp"
+		key="svnwebclient.jsp.include.dialog.invalidResourceButtons_jsp" name="svnwebclient.jsp.include.dialog.invalidResourceButtons_jsp">
+		<url-pattern>/svnwebclient/include/dialog/invalidResourceButtons.jsp
+		</url-pattern>
+	</servlet>
+	<servlet class="jsp.include.dialog.invalidResourceContent_jsp"
+		key="svnwebclient.jsp.include.dialog.invalidResourceContent_jsp" name="svnwebclient.jsp.include.dialog.invalidResourceContent_jsp">
+		<url-pattern>/svnwebclient/include/dialog/invalidResourceContent.jsp
+		</url-pattern>
+	</servlet>
+	<servlet class="jsp.include.dialog.pathSwitchContent_jsp"
+		key="svnwebclient.jsp.include.dialog.pathSwitchContent_jsp" name="svnwebclient.jsp.include.dialog.pathSwitchContent_jsp">
+		<url-pattern>/svnwebclient/include/dialog/pathSwitchContent.jsp
+		</url-pattern>
+	</servlet>
+	<servlet class="jsp.include.dialog.reportReview_jsp"
+		key="svnwebclient.jsp.include.dialog.reportReview_jsp" name="svnwebclient.jsp.include.dialog.reportReview_jsp">
+		<url-pattern>/svnwebclient/include/dialog/reportReview.jsp
+		</url-pattern>
+	</servlet>
+	<servlet class="jsp.include.dialog.reportReviewContent_jsp"
+		key="svnwebclient.jsp.include.dialog.reportReviewContent_jsp" name="svnwebclient.jsp.include.dialog.reportReviewContent_jsp">
+		<url-pattern>/svnwebclient/include/dialog/reportReviewContent.jsp
+		</url-pattern>
+	</servlet>
+	<servlet class="jsp.include.dialog.restrictedAccessButtons_jsp"
+		key="svnwebclient.jsp.include.dialog.restrictedAccessButtons_jsp"
+		name="svnwebclient.jsp.include.dialog.restrictedAccessButtons_jsp">
+		<url-pattern>/svnwebclient/include/dialog/restrictedAccessButtons.jsp
+		</url-pattern>
+	</servlet>
+	<servlet class="jsp.include.dialog.restrictedAccessContent_jsp"
+		key="svnwebclient.jsp.include.dialog.restrictedAccessContent_jsp"
+		name="svnwebclient.jsp.include.dialog.restrictedAccessContent_jsp">
+		<url-pattern>/svnwebclient/include/dialog/restrictedAccessContent.jsp
+		</url-pattern>
+	</servlet>
+	<servlet class="jsp.include.dialog.switchToHeadButtons_jsp"
+		key="svnwebclient.jsp.include.dialog.switchToHeadButtons_jsp" name="svnwebclient.jsp.include.dialog.switchToHeadButtons_jsp">
+		<url-pattern>/svnwebclient/include/dialog/switchToHeadButtons.jsp
+		</url-pattern>
+	</servlet>
+	<servlet class="jsp.include.dialog.switchToHeadContent_jsp"
+		key="svnwebclient.jsp.include.dialog.switchToHeadContent_jsp" name="svnwebclient.jsp.include.dialog.switchToHeadContent_jsp">
+		<url-pattern>/svnwebclient/include/dialog/switchToHeadContent.jsp
+		</url-pattern>
+	</servlet>
+	<servlet class="jsp.include.dialog_jsp" key="svnwebclient.jsp.include.dialog_jsp"
+		name="svnwebclient.jsp.include.dialog_jsp">
+		<url-pattern>/svnwebclient/include/dialog.jsp</url-pattern>
+	</servlet>
+	<servlet class="jsp.include.footer_jsp" key="svnwebclient.jsp.include.footer_jsp"
+		name="svnwebclient.jsp.include.footer_jsp">
+		<url-pattern>/svnwebclient/include/footer.jsp</url-pattern>
+	</servlet>
+	<servlet class="jsp.include.head_jsp" key="svnwebclient.jsp.include.head_jsp"
+		name="svnwebclient.jsp.include.head_jsp">
+		<url-pattern>/svnwebclient/include/head.jsp</url-pattern>
+	</servlet>
+	<servlet class="jsp.include.header_jsp" key="svnwebclient.jsp.include.header_jsp"
+		name="svnwebclient.jsp.include.header_jsp">
+		<url-pattern>/svnwebclient/include/header.jsp</url-pattern>
+	</servlet>
+	<servlet class="jsp.include.info.commitGraphInfo_jsp"
+		key="svnwebclient.jsp.include.info.commitGraphInfo_jsp" name="svnwebclient.jsp.include.info.commitGraphInfo_jsp">
+		<url-pattern>/svnwebclient/include/info/commitGraphInfo.jsp
+		</url-pattern>
+	</servlet>
+	<servlet class="jsp.include.info.statsItemInfo_jsp"
+		key="svnwebclient.jsp.include.info.statsItemInfo_jsp" name="svnwebclient.jsp.include.info.statsItemInfo_jsp">
+		<url-pattern>/svnwebclient/include/info/statsItemInfo.jsp
+		</url-pattern>
+	</servlet>
+	<servlet class="jsp.include.info.statsUserInfo_jsp"
+		key="svnwebclient.jsp.include.info.statsUserInfo_jsp" name="svnwebclient.jsp.include.info.statsUserInfo_jsp">
+		<url-pattern>/svnwebclient/include/info/statsUserInfo.jsp
+		</url-pattern>
+	</servlet>
+	<servlet class="jsp.include.info.directoryCompareInfo_jsp"
+		key="svnwebclient.jsp.include.info.directoryCompareInfo_jsp" name="svnwebclient.jsp.include.info.directoryCompareInfo_jsp">
+		<url-pattern>/svnwebclient/include/info/directoryCompareInfo.jsp
+		</url-pattern>
+	</servlet>
+	<servlet class="jsp.include.info.directoryContentInfo_jsp"
+		key="svnwebclient.jsp.include.info.directoryContentInfo_jsp" name="svnwebclient.jsp.include.info.directoryContentInfo_jsp">
+		<url-pattern>/svnwebclient/include/info/directoryContentInfo.jsp
+		</url-pattern>
+	</servlet>
+	<servlet class="jsp.include.info.fileCompareInfo_jsp"
+		key="svnwebclient.jsp.include.info.fileCompareInfo_jsp" name="svnwebclient.jsp.include.info.fileCompareInfo_jsp">
+		<url-pattern>/svnwebclient/include/info/fileCompareInfo.jsp
+		</url-pattern>
+	</servlet>
+	<servlet class="jsp.include.info.fileContentInfo_jsp"
+		key="svnwebclient.jsp.include.info.fileContentInfo_jsp" name="svnwebclient.jsp.include.info.fileContentInfo_jsp">
+		<url-pattern>/svnwebclient/include/info/fileContentInfo.jsp
+		</url-pattern>
+	</servlet>
+	<servlet class="jsp.include.info.pickerDirectoryContentInfo_jsp"
+		key="svnwebclient.jsp.include.info.pickerDirectoryContentInfo_jsp"
+		name="svnwebclient.jsp.include.info.pickerDirectoryContentInfo_jsp">
+		<url-pattern>/svnwebclient/include/info/pickerDirectoryContentInfo.jsp
+		</url-pattern>
+	</servlet>
+	<servlet class="jsp.include.info.revisionDetailsInfo_jsp"
+		key="svnwebclient.jsp.include.info.revisionDetailsInfo_jsp" name="svnwebclient.jsp.include.info.revisionDetailsInfo_jsp">
+		<url-pattern>/svnwebclient/include/info/revisionDetailsInfo.jsp
+		</url-pattern>
+	</servlet>
+	<servlet class="jsp.include.info.revisionListInfo_jsp"
+		key="svnwebclient.jsp.include.info.revisionListInfo_jsp" name="svnwebclient.jsp.include.info.revisionListInfo_jsp">
+		<url-pattern>/svnwebclient/include/info/revisionListInfo.jsp
+		</url-pattern>
+	</servlet>
+	<servlet class="jsp.include.infoPanel_jsp" key="svnwebclient.jsp.include.infoPanel_jsp"
+		name="svnwebclient.jsp.include.infoPanel_jsp">
+		<url-pattern>/svnwebclient/include/infoPanel.jsp</url-pattern>
+	</servlet>
+	<servlet class="jsp.include.navigation_jsp" key="svnwebclient.jsp.include.navigation_jsp"
+		name="svnwebclient.jsp.include.navigation_jsp">
+		<url-pattern>/svnwebclient/include/navigation.jsp</url-pattern>
+	</servlet>
+	<servlet class="jsp.include.options.fileCompareEncodingOptions_jsp"
+		key="svnwebclient.jsp.include.options.fileCompareEncodingOptions_jsp"
+		name="svnwebclient.jsp.include.options.fileCompareEncodingOptions_jsp">
+		<url-pattern>/svnwebclient/include/options/fileCompareEncodingOptions.jsp
+		</url-pattern>
+	</servlet>
+	<servlet class="jsp.include.options.fileContentOptions_jsp"
+		key="svnwebclient.jsp.include.options.fileContentOptions_jsp" name="svnwebclient.jsp.include.options.fileContentOptions_jsp">
+		<url-pattern>/svnwebclient/include/options/fileContentOptions.jsp
+		</url-pattern>
+	</servlet>
+	<servlet class="jsp.include.options.commitGraphOptions_jsp"
+		key="svnwebclient.jsp.include.options.commitGraphOptions_jsp" name="svnwebclient.jsp.include.options.commitGraphOptions_jsp">
+		<url-pattern>/svnwebclient/include/options/commitGraphOptions.jsp
+		</url-pattern>
+	</servlet>
+	<servlet class="jsp.include.options.revisionListOptions_jsp"
+		key="svnwebclient.jsp.include.options.revisionListOptions_jsp" name="svnwebclient.jsp.include.options.revisionListOptions_jsp">
+		<url-pattern>/svnwebclient/include/options/revisionListOptions.jsp
+		</url-pattern>
+	</servlet>
+	<servlet class="jsp.include.top_jsp" key="svnwebclient.jsp.include.top_jsp"
+		name="svnwebclient.jsp.include.top_jsp">
+		<url-pattern>/svnwebclient/include/top.jsp</url-pattern>
+	</servlet>
+	<servlet class="jsp.invalidResource_jsp" key="svnwebclient.jsp.invalidResource_jsp"
+		name="svnwebclient.jsp.invalidResource_jsp">
+		<url-pattern>/svnwebclient/invalidResource.jsp</url-pattern>
+	</servlet>
+	<servlet class="jsp.login_jsp" key="svnwebclient.jsp.login_jsp"
+		name="svnwebclient.jsp.login_jsp">
+		<url-pattern>/svnwebclient/login.jsp</url-pattern>
+	</servlet>
+	<servlet class="jsp.pathSwitch_jsp" key="svnwebclient.jsp.pathSwitch_jsp"
+		name="svnwebclient.jsp.pathSwitch_jsp">
+		<url-pattern>/svnwebclient/pathSwitch.jsp</url-pattern>
+	</servlet>
+	<servlet class="jsp.pickerDirectoryContent_002dreal_jsp"
+		key="svnwebclient.jsp.pickerDirectoryContent_002dreal_jsp" name="svnwebclient.jsp.pickerDirectoryContent_002dreal_jsp">
+		<url-pattern>/svnwebclient/pickerDirectoryContent-real.jsp
+		</url-pattern>
+	</servlet>
+	<servlet class="jsp.pickerDirectoryContent_jsp" key="svnwebclient.jsp.pickerDirectoryContent_jsp"
+		name="svnwebclient.jsp.pickerDirectoryContent_jsp">
+		<url-pattern>/svnwebclient/pickerDirectoryContent.jsp</url-pattern>
+	</servlet>
+	<servlet class="jsp.restrictedAccess_jsp" key="svnwebclient.jsp.restrictedAccess_jsp"
+		name="svnwebclient.jsp.restrictedAccess_jsp">
+		<url-pattern>/svnwebclient/restrictedAccess.jsp</url-pattern>
+	</servlet>
+	<servlet class="jsp.review_jsp" key="svnwebclient.jsp.review_jsp"
+		name="svnwebclient.jsp.review_jsp">
+		<url-pattern>/svnwebclient/review.jsp</url-pattern>
+	</servlet>
+	<servlet class="jsp.revisionDetails_jsp" key="svnwebclient.jsp.revisionDetails_jsp"
+		name="svnwebclient.jsp.revisionDetails_jsp">
+		<url-pattern>/svnwebclient/revisionDetails.jsp</url-pattern>
+	</servlet>
+	<servlet class="jsp.revisionList_jsp" key="svnwebclient.jsp.revisionList_jsp"
+		name="svnwebclient.jsp.revisionList_jsp">
+		<url-pattern>/svnwebclient/revisionList.jsp</url-pattern>
+	</servlet>
+	<servlet class="jsp.switchToHead_jsp" key="svnwebclient.jsp.switchToHead_jsp"
+		name="svnwebclient.jsp.switchToHead_jsp">
+		<url-pattern>/svnwebclient/switchToHead.jsp</url-pattern>
+	</servlet>
+	<servlet class="jsp.commitGraph_jsp" key="svnwebclient.jsp.commitGraph_jsp"
+		name="svnwebclient.jsp.commitGraph_jsp">
+		<url-pattern>/svnwebclient/commitGraph.jsp</url-pattern>
+	</servlet>
+	<servlet class="jsp.statsItem_jsp" key="svnwebclient.jsp.statsItem_jsp"
+		name="svnwebclient.jsp.statsItem_jsp">
+		<url-pattern>/svnwebclient/statsItem.jsp</url-pattern>
+	</servlet>
+	<servlet class="jsp.statsUser_jsp" key="svnwebclient.jsp.statsUser_jsp"
+		name="svnwebclient.jsp.statsUser_jsp">
+		<url-pattern>/svnwebclient/statsUser.jsp</url-pattern>
+	</servlet>
+	<servlet class="jsp.statsItemDetail_jsp" key="svnwebclient.jsp.statsItemDetail_jsp"
+		name="svnwebclient.jsp.statsItemDetail_jsp">
+		<url-pattern>/svnwebclient/statsItemDetail.jsp</url-pattern>
+	</servlet>
+	<servlet class="org.polarion.svnwebclient.web.servlet.FileDownloadServlet"
+		key="svnwebclient.fileDownload" name="svnwebclient.fileDownload">
+		<url-pattern>/svnwebclient/fileDownload.jsp</url-pattern>
+	</servlet>
+	<servlet class="org.polarion.svnwebclient.web.servlet.LogoutServlet"
+		key="svnwebclient.logout" name="svnwebclient.logout">
+		<url-pattern>/svnwebclient/logout.jsp</url-pattern>
+	</servlet>
+	<servlet
+		class="org.polarion.svnwebclient.web.servlet.CleanExtraSessionAttributeServlet"
+		key="svnwebclient.cleanExtraSessionAttribute" name="svnwebclient.cleanExtraSessionAttribute">
+		<url-pattern>/svnwebclient/cleanExtraSessionAttribute.jsp
+		</url-pattern>
+	</servlet>
+	<servlet class="org.polarion.svnwebclient.web.servlet.RestrictLoginServlet"
+		key="svnwebclient.restrictLogin" name="svnwebclient.restrictLogin">
+		<url-pattern>/svnwebclient/restrictLogin.jsp</url-pattern>
+	</servlet>
+	<servlet
+		class="org.polarion.svnwebclient.web.servlet.DirectoryAddActionServlet"
+		key="svnwebclient.directoryAddAction" name="svnwebclient.directoryAddAction">
+		<url-pattern>/svnwebclient/directoryAddAction.jsp</url-pattern>
+	</servlet>
+	<servlet class="org.polarion.svnwebclient.web.servlet.FileAddActionServlet"
+		key="svnwebclient.fileAddAction" name="svnwebclient.fileAddAction">
+		<url-pattern>/svnwebclient/fileAddAction.jsp</url-pattern>
+	</servlet>
+	<servlet class="org.polarion.svnwebclient.web.servlet.DeleteActionServlet"
+		key="svnwebclient.deleteAction" name="svnwebclient.deleteAction">
+		<url-pattern>/svnwebclient/deleteAction.jsp</url-pattern>
+	</servlet>
+	<servlet
+		class="org.polarion.svnwebclient.web.servlet.FileUpdateActionServlet"
+		key="svnwebclient.fileUpdateAction" name="svnwebclient.fileUpdateAction">
+		<url-pattern>/svnwebclient/fileUpdateAction.jsp</url-pattern>
+	</servlet>
+	<servlet class="org.polarion.svnwebclient.web.servlet.ContentServlet"
+		key="svnwebclient.content" name="svnwebclient.content">
+		<url-pattern>/svnwebclient/content.jsp</url-pattern>
+	</servlet>
+	<servlet class="org.polarion.svnwebclient.web.servlet.ChangedResourceServlet"
+		key="svnwebclient.changedResource" name="svnwebclient.changedResource">
+		<url-pattern>/svnwebclient/changedResource.jsp</url-pattern>
+	</servlet>
+	<servlet class="org.polarion.svnwebclient.web.servlet.ArchiveDownloadServlet"
+		key="svnwebclient.Download Directory" name="svnwebclient.Download Directory">
+		<url-pattern>/svnwebclient/downloadDirectory.jsp</url-pattern>
+	</servlet>
+	<servlet class="org.polarion.svnwebclient.web.servlet.SendEmailServlet"
+		key="svnwebclient.Send Email" name="svnwebclient.Send Email">
+		<url-pattern>/svnwebclient/sendEmail.jsp</url-pattern>
+	</servlet>
+	<servlet class="org.polarion.svnwebclient.web.servlet.GotoServlet"
+		key="svnwebclient.GoTo" name="svnwebclient.GoTo">
+		<url-pattern>/svnwebclient/goto.jsp</url-pattern>
+	</servlet>
+	<servlet
+		class="org.polarion.svnwebclient.web.servlet.RevisionModeChangeServlet"
+		key="svnwebclient.ChangeRevisionMode" name="svnwebclient.ChangeRevisionMode">
+		<url-pattern>/svnwebclient/changeRevisionMode.jsp</url-pattern>
+	</servlet>
+</atlassian-plugin>

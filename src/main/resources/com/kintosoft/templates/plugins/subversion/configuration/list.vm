@@ -1,0 +1,338 @@
+## Copyright (c) "Kinto Soft Ltd"
+## 
+## Subversion ALM is free software: you can redistribute it and/or modify
+## it under the terms of the GNU Affero General Public License as
+## published by the Free Software Foundation, either version 3 of the
+## License, or (at your option) any later version.
+##
+## This program is distributed in the hope that it will be useful,
+## but WITHOUT ANY WARRANTY; without even the implied warranty of
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU Affero General Public License for more details.
+##
+## You should have received a copy of the GNU Affero General Public License
+## along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+<html>
+  <head>
+    <title>$action.getText("subversion.repositories")</title>
+    <meta name="decorator" content="admin" />
+  </head>
+  <body>
+#if ($action.hasPermissions())	
+  #parse("/com/kintosoft/templates/plugins/subversion/configuration/header.vm")
+  
+#if (!$action.agree)
+  <p/>
+  <table class="grid maxWidth" width="100%">
+    <tbody>
+	<tr>
+        <td class="jiraformheader">
+          <h3 class="formtitle">End User License Agreement (EULA)</h3>
+        </td>		
+    </tr>
+	  <tr>
+         <td class="jiraformbody">
+         <p>
+			You indicate your assent to the terms of this Agreement by clicking on the available link (or similar action) to accept the Agreement
+			that is detailed below:
+		  </p>
+		  <p/>
+		 </td> 
+	 </tr>
+	 <tr>
+        <td>
+            <table align="center" bgcolor="bbbbbb" border="0" cellpadding="0" cellspacing="0" width=90%>
+                <tr>
+                  <td>
+                      <table border="0" cellpadding="3" cellspacing="1" width="100%" class="grid">
+                        <tr bgcolor="#f0f0f0">
+                          <td class="colHeaderLink">
+                                <b>Terms and conditions</b>
+                		  </td>
+            	   	       <td class="colHeaderLink">
+                                <b>$action.getText("common.words.operations")</b>
+                		   </td>
+                	   </tr>
+                		<tr>
+							<td bgcolor="ffffff">
+<p><b>DISCLAIMER OF LIABILITY</b></p>
+<p>EXCEPT AS EXPRESSLY SET FORTH IN THIS AGREEMENT, NEITHER THE AUTHORS NOR ANY </p>
+<p>CONTRIBUTORS SHALL HAVE ANY LIABILITY FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, </p>
+<p>EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING WITHOUT LIMITATION LOST PROFITS), </p>
+<p>HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, </p>
+<p>OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OR </p>
+<p>DISTRIBUTION OF THE PROGRAM OR THE EXERCISE OF ANY RIGHTS GRANTED HEREUNDER, EVEN IF </p>
+<p>ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.</p>
+							</td>
+            				<td bgcolor="ffffff"><a href="ALMViewSubversionRepositories!agree.jspa">Accept</a></td>
+                        </tr>
+                      </table>
+                  </td>
+                </tr>
+             </table> 
+			 <p/>
+		</td>
+     </tr>
+    </tbody>
+  </table>
+#else
+  <p/>
+  <table class="grid maxWidth">
+    <tbody>
+      <tr>
+        <td class="jiraformheader">
+          <h3 class="formtitle">Configuration</h3>      
+		</td>
+      </tr>
+ 	#if ($action.indexerError)
+	 <tr>
+		 <td colspan="2" class="formErrors">
+			 <div class="errorArea">
+				 <h4>Error</h4>
+				$action.indexerError
+			 </div>
+		 </td>
+	 </tr>
+	 #end
+     <tr>
+         <td class="jiraformbody">
+          <p></p>
+		  <p/>
+		 </td> 
+	 </tr>
+	 <tr>
+		<td >
+			 <table align="center" bgcolor="bbbbbb" border="0" cellpadding="0" cellspacing="0" width="90%" >
+                <tr>
+                  <td>
+                		<table border="0" cellpadding="3" cellspacing="1" width="100%" class="grid" style="table-layout: fixed;">
+                            <tr bgcolor="#f0f0f0">
+                              <td class="colHeaderLink">
+                                    <b>Attribute</b>
+                    		  </td>
+                	   	       <td class="colHeaderLink">
+                                    <b>Value</b>
+                    		   </td>
+                	   	       <td class="colHeaderLink">
+                                    <b>$action.getText("common.words.operations")</b>
+                    		   </td>
+                     	   </tr>
+                    		<tr>
+                    			<td bgcolor="ffffff">H2 Database Path</td>
+                    			<td bgcolor="ffffff" style="word-wrap:break-word;">$action.indexPath</td>
+                    			<td bgcolor="ffffff"></td>
+                            </tr>
+                    		<tr>
+                    			<td bgcolor="ffffff">H2 Connection Pool Size</td>
+                    			<td bgcolor="ffffff">$action.poolSize</td>
+                    			<td bgcolor="ffffff"><a href="ALMUpdateConnectionPoolSize!default.jspa">Edit</a></td>
+                            </tr>
+                    		<tr>
+                    			<td bgcolor="ffffff">Share H2 JDBC connections with 3rd party plugins</td>
+                    			<td bgcolor="ffffff">$action.shareConnections</td>
+                    			<td bgcolor="ffffff"><a href="ALMUpdateShareConnections!default.jspa">Switch</a></td>
+                            </tr>
+							<tr>
+                    			<td bgcolor="ffffff">H2 Database Web Console</td>
+                                <td bgcolor="ffffff" style="word-wrap:break-word;"><b>Username</b>: h2admin<br><b>JDBC URL</b>: $action.poolUrl</td>
+                    			<td bgcolor="ffffff" width="100%"><a href="ALMUpdateDatabaseServer!default.jspa">Password</a> | <a href="$req.contextPath/plugins/servlet/svnwebclient/console/" target="_blank">Console</a></td>
+                            </tr>
+							<tr>
+                    			<td bgcolor="ffffff">SVN Web Client requires JIRA session</td>
+                                <td bgcolor="ffffff">$action.requireTrackerSession</td>
+                    			<td bgcolor="ffffff" width="100%"><a href="ALMUpdateRequireTrackerSession!default.jspa">Switch</a></td>
+                            </tr>
+							<tr>
+                    			<td bgcolor="ffffff">Subversion Timeouts (millis.)</td>
+                                <td bgcolor="ffffff"><b>Connection</b>: $action.SVNConnectionTimeout<br><b>Read</b>: $action.SVNReadTimeout</td>
+                    			<td bgcolor="ffffff" width="100%"><a href="ALMUpdateSVNTimeout!default.jspa">Edit</a></td>
+                            </tr>
+							<tr>
+                    			<td bgcolor="ffffff">Compact database on plugin exit (it may take a long time and it should enabled only from time to time for maintenence)</td>
+                                <td bgcolor="ffffff">$action.compactOnClose</td>
+                    			<td bgcolor="ffffff" width="100%"><a href="ALMUpdateCompactOnClose!default.jspa">Switch</a></td>
+                            </tr>
+                          </table>
+                  </td>
+                </tr>
+             </table>
+        </td>
+	 </tr>
+    </tbody>
+  </table>
+	<p/>
+
+	#set($maxThreads = $action.maxIndexingThreads)
+	#set($currentThreads = $action.multipleRepoManager.indexer.currentActiveThreads)
+	#set($repos = $action.getRepositories())
+
+	<table class="grid maxWidth">
+    <tbody>
+      <tr>
+        <td class="jiraformheader">
+          <h3 class="formtitle">Indexing Process</h3>
+        </td>
+      </tr>
+      <tr>
+        <td class="jiraformbody">
+          <p>The indexing process scans all the registered repositories within periodic time intervals.</p>
+		</td>
+      </tr>
+    </tbody>
+  </table>
+  <p>
+	<table align="center" bgcolor="bbbbbb" border="0" cellpadding="0" cellspacing="0" width=90%>
+    <tr>
+      <td>
+    		<table border="0" cellpadding="3" cellspacing="1" width="100%" class="grid">
+                <tr bgcolor="#f0f0f0">
+                  <td class="colHeaderLink">
+                        <b>Interval  (secs.)</b>
+        		  </td>
+                  <td class="colHeaderLink">
+                        <b>Latest scan</b>
+        		  </td>
+				  <td class="colHeaderLink">
+					    <b>$action.getText("common.words.operations")</b>
+                  </td>
+         	   </tr>
+        		<tr>
+        			<td bgcolor="ffffff">$action.interval</td>
+                    <td bgcolor="ffffff">$action.latestFire</td>
+                    <td bgcolor="ffffff"><a href="ALMUpdateScheduler!default.jspa">Re-schedule</a></td>
+                </tr>
+              </table>
+      </td>
+    </tr>
+ </table>
+	<p/>
+	<table class="grid maxWidth">
+    <tbody>
+      <tr>
+        <td class="jiraformheader">
+          <h3 class="formtitle">Registered Subversion Repositories</h3>
+        </td>
+      </tr>
+      <tr>
+        <td class="jiraformbody">
+          <p>There are $repos.size() Subversion repositories registred.</p>
+     	  <p>The Indexing Process is configured to scan upto $maxThreads repositories in parallel. Currently, there are $currentThreads being indexed.</p>
+    	#if($currentThreads < $maxThreads && $repos.size() >  $currentThreads)
+           <p><a href="ALMUpdateScheduler!startIndexer.jspa">Scan repositories now</a></p>
+ 		#end
+		</td>
+      </tr>
+	  <tr>
+		<td>
+			<p/>
+			<p>
+    			<img width="8" height="8" border="0" src="${req.contextPath}/images/icons/bullet_creme.gif"/>
+                <a href="ALMAddSubversionRepository!default.jspa"><b>$action.getText("common.forms.add")</b></a>
+			</p>
+         </td>
+      </tr>
+    </tbody>
+  </table>
+  <p>
+
+  <table align=center bgcolor="bbbbbb" border="0" cellpadding="0" cellspacing="0" width=90%>
+    <tr>
+      <td>
+        <table border="0" cellpadding="3" cellspacing="1" width="100%" class="grid">
+            <tr bgcolor="#f0f0f0">
+             <td class="colHeaderLink">
+                <b>ID</b>
+              </td>
+               <td class="colHeaderLink">
+                <b>$action.getText("common.words.name")</b>
+              </td>
+             <td class="colHeaderLink">
+                <b>Status</b>
+              </td>
+             <td class="colHeaderLink">
+                <b>$action.getText("admin.common.words.details")</b>
+              </td>
+              <td class="colHeaderLink">
+                <b>$action.getText("common.words.operations")</b>
+              </td>
+            </tr>
+
+            #foreach ($repo in $repos)
+                #if ($velocityCount % 2 == 1)
+                  #set ($rowbgcolor = "ffffff")
+                #else
+                  #set ($rowbgcolor = "fffff0")
+    			#end
+			
+    			#set ($indexingError = (!$repo.isActive() || $repo.latestRevision == -1))
+    			
+    			#set($latestCached = $action.getLatestCachedRevision($repo.id))
+    			#set($lastRevision = $repo.latestRevision)
+
+    			#if($indexingError)
+    				#set ($fontcolor="#CC0000")
+    			#else
+    				#if($latestCached == $lastRevision)
+    					#set ($fontcolor="#00CC00")
+    				#else
+    					#set ($fontcolor="#FF9933")
+    				#end
+    			#end
+			
+				
+			
+            <tr bgcolor="$rowbgcolor">
+
+				<td valign=top>
+                    <b>$repo.id</b>
+                </td>
+
+               <td valign=top>
+                    <b><font color="$fontcolor">$textutils.htmlEncode( $repo.getDisplayName() )</font></b>
+                </td>
+
+				
+				<td valign=top>
+					 #if ($repo.isActive())
+						#if($action.multipleRepoManager.indexer.isBeingIndexed($repo.id))
+							Scanning
+						#else
+							Active
+						#end
+					 #else
+						Inactive
+					 #end
+                </td>
+
+ 				
+				 
+                <td valign=top>
+                    <b>$action.getText("subversion.repository.root")</b>: $textutils.htmlEncode( $repo.getRoot() )<br>
+ 					
+					<b>Index progress</b>: #if ($repo.isActive()) $latestCached / $lastRevision #else <font color="#ff0000">(${textutils.htmlEncode( $repo.getInactiveMessage() )}) </font> #end<br>				
+				
+
+					#if ($repo.isWebLinking())
+                      <br><b>$action.getText("admin.cvsmodules.viewcvs.root.param")</b>: $repo.getWebLink()
+                    #end
+                 </td>
+
+                <td valign=top align=left>
+                    <a href="ALMUpdateSubversionRepository!default.jspa?repoIdForUpdate=$repo.getId()">$action.getText("common.words.edit")</a>
+                    | <a href="ALMDeleteSubversionRepository!default.jspa?repoId=$repo.getId()">$action.getText("common.words.delete")</a>
+                </td>
+            </tr>
+            #end 
+        </table>
+    </td></tr></table>
+
+</p>
+#end
+
+#else
+	#parse("templates/plugins/subversion/configuration/no-privilege.vm")
+#end
+
+</body>
+</html>

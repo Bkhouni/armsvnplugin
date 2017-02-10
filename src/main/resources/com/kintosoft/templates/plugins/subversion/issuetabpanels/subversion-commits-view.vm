@@ -1,0 +1,84 @@
+## Copyright (c) "Kinto Soft Ltd"
+## 
+## Subversion ALM is free software: you can redistribute it and/or modify
+## it under the terms of the GNU Affero General Public License as
+## published by the Free Software Foundation, either version 3 of the
+## License, or (at your option) any later version.
+##
+## This program is distributed in the hope that it will be useful,
+## but WITHOUT ANY WARRANTY; without even the implied warranty of
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU Affero General Public License for more details.
+##
+## You should have received a copy of the GNU Affero General Public License
+## along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+#disable_html_escaping()
+<table cellpadding="2" cellspacing="0" border="0" width="100%">
+<tr>
+    <td bgcolor="#f0f0f0" width="10%"><b>$i18n.getText("subversion.issue-tab.repository")</b></td>
+    <td bgcolor="#f0f0f0" width="10%"><b>$i18n.getText("subversion.issue-tab.revision")</b></td>
+    <td bgcolor="#f0f0f0" width="10%"><b>$i18n.getText("subversion.issue-tab.date")</b></td>
+    <td bgcolor="#f0f0f0" width="10%"><b>$i18n.getText("subversion.issue-tab.user")</b></td>
+    <td bgcolor="#f0f0f0"><b>$i18n.getText("subversion.issue-tab.message")</b></td>
+</tr>
+<tr>
+    <td bgcolor="#ffffff" width="10%" valign="top" rowspan="3">$textutils.htmlEncode( $svn.repositoryDisplayName )</td>
+    <td bgcolor="#ffffff" width="10%" valign="top" rowspan="3">$svn.linkRenderer.getRevisionLink($req.contextPath, $svn.repoId, $svn.revision)</td>
+    <td bgcolor="#ffffff" width="10%" valign="top" rowspan="3">$!svn.revision.date</td>
+    <td bgcolor="#ffffff" width="10%" valign="top" rowspan="3">$textutils.htmlEncode( $stringUtils.defaultString( $svn.revision.author ) )</td>
+    <td bgcolor="#ffffff">#makelinkedhtml($svn.revision.getMessage().trim())</td>
+</tr>
+<tr>
+    <td bgcolor="#f0f0f0"><b>$i18n.getText("subversion.issue-tab.files-changed")</b></td>
+</tr>
+<tr>
+    <td bgcolor="#ffffff">
+        #foreach ($changePath in $svn.revision.changedPaths)
+    		#set($rev=$svn.revision.revision)
+    		#if($svn.isDeleted($changePath) == true)
+				#set( $rev = $svn.dec($rev))
+			#end
+			
+			<a href="$req.contextPath/secure/SWCTopMenuAction!default.jspa?jsp=commitGraph&repoId=$svn.repoId&url=$changePath.path&pegrev=$rev"><img src='$req.contextPath/download/resources/com.kintosoft.jira.subversion-plus:svnwebclient/svnwebclient/images/commit_graph.png' alt="Commit graph" title="Commit graph" border="0"></img></a>
+            #if ($svn.isDeleted($changePath) == true)
+                <font color="#990000" size="-2"><b title="Delete">$i18n.getText("subversion.issue-tab.deleted")</b></font>
+            #elseif ($svn.isAdded($changePath) == true)
+                <font color="#009900" size="-2"><b title="Add">$i18n.getText("subversion.issue-tab.added")</b></font>
+            #elseif ($svn.isModified($changePath) == true)
+                <font color="#999933" size="-2"><b title="Modify">$i18n.getText("subversion.issue-tab.modified")</b></font>
+            #elseif ($svn.isReplaced($changePath) == true)
+                <font color="#999933" size="-2"><b title="Replace">$i18n.getText("subversion.issue-tab.replaced")</b></font>
+            #else
+                $changePath.svn
+			#end
+				$svn.linkRenderer.getChangePathLink($req.contextPath,$svn.repoId,$svn.revision,$changePath)
+
+            #if ($changePath.copyPath)
+                (from $svn.linkRenderer.getCopySrcLink($req.contextPath,$svn.repoId,$svn.revision,$changePath))
+            #end
+
+            <br>
+        #end
+    </td>
+</tr>
+</table>
+#set ( $innerClassSeparator = "$" )
+#set ( $lastSubversionRevisionActionName = "LastSubversionRevisionActionInPage" )
+#if ($svn.class.name == "com.kintosoft.jira.plugin.ext.subversion.issuetabpanels.changes.SubversionRevisionsTabPanel${innerClassSeparator}${lastSubversionRevisionActionName}")
+    <div class="plugin_subversion_showmore_issuetab">
+        <fieldset style="display: none">
+            <input type="hidden" name="issueKey" value="">
+            <input type="hidden" name="page" value="com.kintosoft.jira.subversion-plus:svnplus-subversion-commits-tabpanel">
+            <input type="hidden" name="decorator" value="none">
+            #if ( $req.getParameter("pageIndex") )
+                #set ( $newPageIndex = $textutils.parseInt( $req.getParameter("pageIndex") ) + 1 )
+                <input type="hidden" name="pageIndex" value="$newPageIndex">
+            #else
+                <input type="hidden" name="pageIndex" value="1">
+            #end
+            <input type="hidden" name="pageSize" value="$!req.getParameter('pageSize')">
+        </fieldset>
+        <input class="plugin_subversion_showmore_issuetab_button" type="button" value="More">
+    </div>
+#end

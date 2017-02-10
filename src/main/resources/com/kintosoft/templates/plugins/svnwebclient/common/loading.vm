@@ -1,0 +1,41 @@
+## Copyright (c) "Kinto Soft Ltd"
+## 
+## Subversion ALM is free software: you can redistribute it and/or modify
+## it under the terms of the GNU Affero General Public License as
+## published by the Free Software Foundation, either version 3 of the
+## License, or (at your option) any later version.
+##
+## This program is distributed in the hope that it will be useful,
+## but WITHOUT ANY WARRANTY; without even the implied warranty of
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU Affero General Public License for more details.
+##
+## You should have received a copy of the GNU Affero General Public License
+## along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+<meta http-equiv="X-UA-Compatible" content="IE=9" />
+
+<link href='$req.getContextPath()/download/resources/com.kintosoft.jira.subversion-plus:svnwebclient/svnwebclient/style/stats.css' type="text/css" rel="stylesheet" media="screen"/>
+
+<script src="$req.getContextPath()/plugins/servlet/svnwebclient/dwr/engine.js"></script>
+<script src="$req.getContextPath()/plugins/servlet/svnwebclient/dwr/util.js"></script>
+<script src="$req.getContextPath()/plugins/servlet/svnwebclient/dwr/interface/StatsService.js"></script>
+<script src='$req.getContextPath()/download/resources/com.kintosoft.jira.subversion-plus:svnwebclient/svnwebclient/script/d3.v3.min.js'></script>
+<script type="text/javascript" src='$req.getContextPath()/download/resources/com.kintosoft.jira.subversion-plus:svnwebclient/svnwebclient/script/statsItem.js' media="screen"></script>	
+
+#macro(loading $divId)
+	<div id="$divId" style="position: relative; top:0px;">
+	<table>
+		<tr>
+			<td>
+ 			<img src='$req.getContextPath()/download/resources/com.kintosoft.jira.subversion-plus:svnwebclient/svnwebclient/images/progress.gif'/>
+			</td>
+		</tr>
+	<tr>
+			<td>
+		<span style="font-family:Verdana;font-size:11px">Loading...</span>                     
+		</td>
+		</tr>
+	</table>
+</div>
+#end
